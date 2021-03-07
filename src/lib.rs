@@ -15,6 +15,7 @@ pub use currency::{
 	BalanceStatus, Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, Stp258AssetReservable,
 	LockIdentifier, Stp258Currency, Stp258CurrencyExtended, Stp258CurrencyLockable, Stp258CurrencyReservable, OnDust,
 };
+pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
 pub use data_provider::{DataFeeder, DataProvider, DataProviderExtended};
 pub use get_by_key::GetByKey;
 pub use nft::NFT;
@@ -30,6 +31,7 @@ pub mod get_by_key;
 pub mod nft;
 pub mod price;
 pub mod rewards;
+pub mod serp_tes;
 
 /// New data handler
 #[impl_trait_for_tuples::impl_for_tuples(30)]
