@@ -23,7 +23,11 @@ pub trait SerpTes<AccountId, BlockNumber, CurrencyId, Price> {
 
 	/// The balance of an account.
 	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
-    
+
+	fn adjustment_frequency(
+		adjustment_frequency: BlockNumber,
+    ) -> DispatchResult;
+
 	// Public immutables
 
 	/// The total amount of issuance of `currency_id`.
@@ -55,5 +59,4 @@ pub trait SerpTes<AccountId, BlockNumber, CurrencyId, Price> {
 
 	/// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
 	fn supply_change(currency_id: Self::CurrencyId, numerator: u64, denominator: u64, supply: u64) -> u64;
-	
 }
