@@ -20,7 +20,7 @@ use sp_std::{
 pub struct DefaultSerpMarketPriceProvider<CurrencyId, Source>(PhantomData<(CurrencyId, Source)>);
 
 /// Abstraction over a serping market system for the Setheum Elastic Reserve Protocol (SERP) Market.
-pub trait SerpMarket<CurrencyId, AccountId,  Balance, Price, BlockNumber> {
+pub trait SerpMarket<CurrencyId, AccountId,  Balance, Price> {
 	/// The price to trade.
 	type Balance: AtLeast32Bit + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
     /// The currency type in trade.
@@ -100,7 +100,7 @@ where
 }
 
 /// Hooks for serping to handle trades.
-pub trait SerpMarketHandler<AccountId, Balance, BlockNumber, SerpingId> {
+pub trait SerpMarketHandler<AccountId, Balance, SerpingId> {
 	/// Called when `expand_supply` is received from the SERP.
 	/// Implementation should `deposit` the `amount` to `serpup_to`, 
 	/// then `amount` will be slashed from `serpup_from` and update
