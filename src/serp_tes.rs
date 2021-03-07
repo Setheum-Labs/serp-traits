@@ -1,14 +1,12 @@
+use sp_std:: fmt::Debug;
+
 use codec::FullCodec;
-pub use frame_support::traits::{BalanceStatus, LockIdentifier};
+pub use frame_support::{traits::{BalanceStatus, LockIdentifier}, Parameter};
 use sp_runtime::{
 	traits::{
-		AtLeast32BitUnsigned, MaybeSerializeDeserialize
+		AtLeast32BitUnsigned, MaybeSerializeDeserialize, Member
 	}, 
 	DispatchResult
-};
-use sp_std::{
-	cmp::{Eq, PartialEq},
-	fmt::Debug,
 };
 
 	/// The frequency of adjustments for the Currency supply.
@@ -21,7 +19,7 @@ pub struct ElastAdjustmentFrequency<BlockNumber> {
 
 pub trait SerpTes<AccountId, BlockNumber, CurrencyId, Price> {
 	/// The currency identifier.
-	type CurrencyId: FullCodec + Eq + PartialEq + Copy + MaybeSerializeDeserialize + Debug;
+	type CurrencyId: Parameter + Member + Copy + MaybeSerializeDeserialize;
 
 	/// The balance of an account.
 	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
