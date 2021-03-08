@@ -25,7 +25,7 @@ where
 	}
 }
 
-#[cfg(test)]
+#[cfg(test)]	
 mod test {
 	use super::*;
 	use sp_runtime::{FixedPointNumber, FixedU128};
