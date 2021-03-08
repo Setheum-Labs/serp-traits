@@ -24,7 +24,7 @@ pub trait Market<CurrencyId, AccountId,  Balance, Price, Source, SerpQuote> {
 	fn on_expand_supply(
         currency_id: CurrencyId,
 		amount: Balance,
-		serpup_to: AccountId, AccountId,
+		serpup_to: AccountId,
 		serpup_from: AccountId,
 		new_supply: Balance,
 	) -> DispatchResult;
