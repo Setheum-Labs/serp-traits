@@ -1,23 +1,28 @@
-use crate::{Change, DataProvider};
+use crate::DataProvider;
 use codec::FullCodec;
 use codec::{Decode, Encode};
 use frame_support::Parameter;
 use sp_runtime::{
-	traits::{AtLeast32Bit, Bounded, CheckedDiv, MaybeSerializeDeserialize, Member},
-	DispatchError, DispatchResult, RuntimeDebug, PerThing, Perbill,
+	traits::{
+        AtLeast32Bit, CheckedDiv, CheckedAdd, MaybeSerializeDeserialize, Member
+    }, 
+    DispatchResult, RuntimeDebug, PerThing, Perbill,
 };
 use sp_std::{
 	cmp::{Eq, PartialEq},
 	fmt::Debug,
     marker::PhantomData,
-	result,
 };
 
 /// Serping info.
 #[cfg_attr(feature = "std", derive(PartialEq, Eq))]
 #[derive(Encode, Decode, RuntimeDebug)]
 /// A `SerpMarketPriceProvider` implementation based on price data from a `DataProvider`
-pub struct DefaultSerpMarketPriceProvider<CurrencyId, Source>(PhantomData<(CurrencyId, Source)>);
+pub struct SerpMarketPriceProvider<CurrencyId, Source>(PhantomData<(CurrencyId, Source)>);
+
+pub trait SerpMarketPriceProvider<CurrencyId, Price> {
+	fn get_price(base: CurrencyId, quote: CurrencyId) -> Option<Price>;
+}
 
 /// Abstraction over a serping market system for the Setheum Elastic Reserve Protocol (SERP) Market.
 pub trait SerpMarket<CurrencyId, AccountId,  Balance, Price> {
@@ -25,8 +30,6 @@ pub trait SerpMarket<CurrencyId, AccountId,  Balance, Price> {
 	type Balance: AtLeast32Bit + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
     /// The currency type in trade.
 	type CurrencyId: FullCodec + Eq + PartialEq + Copy + MaybeSerializeDeserialize + Debug;
-    /// The currency price type.
-	type Price = FixedU128;
 
     // Public immutables
     
@@ -71,23 +74,15 @@ pub trait SerpMarket<CurrencyId, AccountId,  Balance, Price> {
 	) -> DispatchResult;
 }
 
-/// A trait to provide relative markey price for two currencies
-pub trait SerpMarketPriceProvider<CurrencyId, Price> {
-	fn get_price(base: CurrencyId, quote: CurrencyId) -> Option<Price>;
-	fn get_serping_price(base: CurrencyId, quote: CurrencyId) -> Option<Price>;
-}
-
-
 /// A `MarketPriceProvider` implementation based on price data from a `DataProvider`
-pub struct DefaultMarketPriceProvider<CurrencyId, Source>(PhantomData<(CurrencyId, Source)>);
+pub struct DefaultSerpMarketPriceProvider<CurrencyId, Source, >(PhantomData<(CurrencyId, Source)>);
 
-impl<CurrencyId, Source, Price> MarketPriceProvider<CurrencyId, Price> for DefaultMarketPriceProvider<CurrencyId, Source>
+impl<CurrencyId, Source, Price, SerpQuote, MintRate> SerpMarketPriceProvider<CurrencyId, Price> for DefaultSerpMarketPriceProvider<CurrencyId, Source>
 where
 	CurrencyId: Parameter + Member + Copy + MaybeSerializeDeserialize,
 	Source: DataProvider<CurrencyId, Price>,
 	Price: CheckedDiv,
-    SerpingQuote: CheckedAdd,
-    MintRate: Perbill
+    SerpQuote: CheckedAdd,
 {
 	fn get_serpup_price(base_currency_id: CurrencyId, quote_currency_id: CurrencyId) -> Option<Price> {
 		let base_price = Source::get(&base_currency_id)?; // base currency price compared to currency (native currency could work best)
@@ -99,8 +94,9 @@ where
 	}
 }
 
+
 /// Hooks for serping to handle trades.
-pub trait SerpMarketHandler<AccountId, Balance, SerpingId> {
+pub trait SerpMarketHandler<CurrencyId, AccountId, Balance, SerpingId> {
 	/// Called when `expand_supply` is received from the SERP.
 	/// Implementation should `deposit` the `amount` to `serpup_to`, 
 	/// then `amount` will be slashed from `serpup_from` and update
@@ -108,7 +104,7 @@ pub trait SerpMarketHandler<AccountId, Balance, SerpingId> {
 	fn on_expand_supply(
         currency_id: CurrencyId,
 		amount: Balance,
-		serpup_to: AccountId, AccountId,
+		serpup_to: AccountId,
 		serpup_from: AccountId,
 		new_supply: Balance,
 	) -> DispatchResult;

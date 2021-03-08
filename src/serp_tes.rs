@@ -1,22 +1,26 @@
-use sp_std:: fmt::Debug;
-
 use codec::FullCodec;
+use crate::DataProvider;
 pub use frame_support::{traits::{BalanceStatus, LockIdentifier}, Parameter};
 use sp_runtime::{
 	traits::{
-		AtLeast32BitUnsigned, MaybeSerializeDeserialize, Member
+		AtLeast32BitUnsigned, MaybeSerializeDeserialize, Member, CheckedDiv,
 	}, 
 	DispatchResult
 };
+use sp_std::{marker::PhantomData, fmt::Debug};
 
-	/// The frequency of adjustments for the Currency supply.
+/// A trait to provide relative price for two currencies
+pub trait SerpTesPriceProvider<CurrencyId, Price> {
+	fn get_price(base: CurrencyId, quote: CurrencyId) -> Option<Price>;
+}
+
+/// The frequency of adjustments for the Currency supply.
 pub struct ElastAdjustmentFrequency<BlockNumber> {
 	/// Number of blocks for adjustment frequency.
 	pub adjustment_frequency: BlockNumber,
 }
 
 /// Abstraction over a fungible multi-stable-currency Token Elasticity of Supply system.
-
 pub trait SerpTes<AccountId, BlockNumber, CurrencyId, Price> {
 	/// The currency identifier.
 	type CurrencyId: Parameter + Member + Copy + MaybeSerializeDeserialize;
@@ -60,3 +64,29 @@ pub trait SerpTes<AccountId, BlockNumber, CurrencyId, Price> {
 	/// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
 	fn supply_change(currency_id: Self::CurrencyId, numerator: u64, denominator: u64, supply: u64) -> u64;
 }
+
+/// A `PriceProvider` implementation based on price data from a `DataProvider`
+pub struct DefaultSerpTesPriceProvider<CurrencyId, Source>(PhantomData<(CurrencyId, Source)>);
+
+impl<CurrencyId, Source, Price> SerpTesPriceProvider<CurrencyId, Price> for DefaultSerpTesPriceProvider<CurrencyId, Source>
+where
+	CurrencyId: Parameter + Member + Copy + MaybeSerializeDeserialize,
+	Source: DataProvider<CurrencyId, Price>,
+	Price: CheckedDiv,
+{
+	fn get_price(base_currency_id: CurrencyId, quote_currency_id: CurrencyId) -> Option<Price> {
+		let base_price = Source::get(&base_currency_id)?;
+		let quote_price = Source::get(&quote_currency_id)?;
+
+		base_price.checked_div(&quote_price)
+	}
+}
+
+fn get_serpup_price(base_currency_id: CurrencyId, quote_currency_id: CurrencyId) -> Option<Price> {
+		let base_price = Source::get(&base_currency_id)?; // base currency price compared to currency (native currency could work best)
+		let quote_price = Source::get(&quote_currency_id)?;
+        let market_price = base_price.checked_div(&quote_price); // market_price of the currency.
+        let mint_rate = Perbill::from_percent(); // supply change of the currency.
+        let serp_quote = market_price.checked_add(Perbill::from_percent(&mint_rate * 2)); // serping_price of the currency.
+        serp_quote.checked_add(Perbill::from_percent(&mint_rate * 2)); 
+	}
