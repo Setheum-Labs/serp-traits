@@ -23,7 +23,7 @@ pub use price::{DefaultPriceProvider, PriceProvider};
 pub use rewards::RewardHandler;
 pub use serp_market::Market;
 pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
-pub use serp_frame_support::*;
+pub use serp_frame_support::{Currency, LockableCurrency, ReservableCurrency};
 
 pub mod account;
 pub mod arithmetic;

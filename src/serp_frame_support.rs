@@ -5,29 +5,22 @@
 //!
 //! NOTE: If you're looking for `parameter_types`, it has moved in to the top-level module.
 //! Only a few but significant changes from `frame_support` on Currency(SetheumCurrency).
-use sp_std::{prelude::*, result, marker::PhantomData, ops::Div, fmt::Debug};
-use codec::{FullCodec, Codec, Encode, Decode, EncodeLike};
-use sp_core::u32_trait::Value as U32;
+use sp_std::{prelude::*, result, fmt::Debug};
+use codec::{FullCodec, Encode, Decode};
 use sp_runtime::{
-	RuntimeAppPublic, RuntimeDebug, BoundToRuntimeAppPublic,
-	ConsensusEngineId, DispatchResult, DispatchError,
-	traits::{
-		MaybeSerializeDeserialize, AtLeast32Bit, Saturating, TrailingZeroInput, Bounded, Zero,
-		BadOrigin, AtLeast32BitUnsigned, Convert, UniqueSaturatedFrom, UniqueSaturatedInto,
-		SaturatedConversion, StoredMapError, Block as BlockT,
-	},
+	RuntimeDebug,DispatchResult, DispatchError,
+	traits::{MaybeSerializeDeserialize, AtLeast32BitUnsigned}
 };
-use sp_staking::SessionIndex;
-use frame_support::*;
-use bitflags::bitflags;
-use impl_trait_for_tuples::impl_for_tuples;
+use frame_support::{
+	traits::{ExistenceRequirement, Get, Imbalance, SignedImbalance, WithdrawReasons,}
+};
 
 /// Re-expected for the macro.
 #[doc(hidden)]
 pub use sp_std::{mem::{swap, take}, cell::RefCell, vec::Vec, boxed::Box};
 
 /// Abstraction over a fungible assets system.
-pub trait SetheumCurrency<AccountId> {
+pub trait Currency<AccountId> {
 	/// The balance of an account.
 	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug +
 		Default;
@@ -216,7 +209,7 @@ pub enum BalanceStatus {
 }
 
 /// A currency where funds can be reserved from the user.
-pub trait SetheumReservableCurrency<AccountId>: Currency<AccountId> {
+pub trait ReservableCurrency<AccountId>: Currency<AccountId> {
 	/// Same result as `reserve(who, value)` (but without the side-effects) assuming there
 	/// are no balance changes in the meantime.
 	fn can_reserve(who: &AccountId, value: Self::Balance) -> bool;
@@ -298,7 +291,7 @@ pub trait SetheumReservableCurrency<AccountId>: Currency<AccountId> {
 pub type LockIdentifier = [u8; 8];
 
 /// A currency whose accounts can have liquidity restrictions.
-pub trait SetheumLockableCurrency<AccountId>: Currency<AccountId> {
+pub trait LockableCurrency<AccountId>: Currency<AccountId> {
 	/// The quantity used to denote time; usually just a `BlockNumber`.
 	type Moment;
 
