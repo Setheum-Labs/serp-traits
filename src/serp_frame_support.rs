@@ -1129,6 +1129,23 @@ pub trait ReservableCurrency<AccountId>: Currency<AccountId> {
 		value: Self::Balance
 	) -> (Self::NegativeImbalance, Self::Balance);
 
+    /// Burns up to `value` from reserved balance of `who`. This function cannot fail.
+	///
+	/// As much funds up to `value` will be burnt as possible. If the reserve balance of `who`
+	/// is less than `value`, then a non-zero second item will be returned.
+	fn burn_reserved(
+		who: &AccountId,
+		value: Self::Balance,
+	) -> (Self::NegativeImbalance, Self::Balance);
+
+    /// Mints `value` to the reserved balance of `who`. This function cannot fail.
+	///
+	/// As much funds up to `value` will be added as possible.
+	fn create_reserved(
+		who: &AccountId,
+		value: Self::Balance
+	) -> (Self::PositiveImbalance, Self::Balance);
+
 	/// The amount of the balance of a given account that is externally reserved; this can still get
 	/// slashed, but gets slashed last of all.
 	///
