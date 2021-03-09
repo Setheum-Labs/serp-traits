@@ -1,6 +1,6 @@
 use crate::arithmetic;
 use codec::{Codec, FullCodec};
-pub use frame_support::traits::{BalanceStatus, LockIdentifier};
+use crate::setheum_currency::{BalanceStatus, LockIdentifier};
 use sp_runtime::{
 	traits::{AtLeast32BitUnsigned, MaybeSerializeDeserialize},
 	DispatchError, DispatchResult,
@@ -150,7 +150,7 @@ pub trait Stp258CurrencyReservable<AccountId>: Stp258Currency<AccountId> {
 	/// It changes `TotalIssuance`.
 	/// Is a no-op if the `value` to be deposited is zero.
 	fn create_reserved(currency_id: Self::CurrencyId, who: &AccountId, value: Self::Balance) -> DispatchResult;
-	
+
 	/// The amount of the balance of a given account that is externally
 	/// reserved; this can still get slashed, but gets slashed last of all.
 	///
