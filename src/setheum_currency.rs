@@ -4,7 +4,6 @@
 //! Traits for FRAME.
 //!
 //! NOTE: If you're looking for `parameter_types`, it has moved in to the top-level module.
-//! Only a few but significant changes from `frame_support` on Currency(SetheumCurrency).
 use sp_std::{prelude::*, result, fmt::Debug};
 use codec::{FullCodec, Encode, Decode};
 use sp_runtime::{

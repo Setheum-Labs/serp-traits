@@ -23,7 +23,7 @@ pub use price::{DefaultPriceProvider, PriceProvider};
 pub use rewards::RewardHandler;
 pub use serp_market::Market;
 pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
-pub use serp_frame_support::{Currency, LockableCurrency, ReservableCurrency};
+pub use setheum_currency::{Currency, LockableCurrency, ReservableCurrency};
 
 pub mod account;
 pub mod arithmetic;
@@ -36,7 +36,7 @@ pub mod price;
 pub mod rewards;
 pub mod serp_market;
 pub mod serp_tes;
-pub mod serp_frame_support;
+pub mod setheum_currency;
 
 
 /// New data handler
