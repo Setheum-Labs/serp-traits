@@ -318,7 +318,6 @@ pub trait Stp258AssetReservable<AccountId>: Stp258Asset<AccountId> {
 	/// As much funds up to `value` will be added as possible.
 	fn create_reserved(who: &AccountId, value: Self::Balance) -> Self::Balance;
 
-
 	/// The amount of the balance of a given account that is externally
 	/// reserved; this can still get slashed, but gets slashed last of all.
 	///
