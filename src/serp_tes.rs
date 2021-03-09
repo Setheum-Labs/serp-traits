@@ -1,5 +1,5 @@
 use codec::FullCodec;
-use crate::setheum_currency::{BalanceStatus, LockIdentifier};
+use frame_support::traits::{BalanceStatus, LockIdentifier};
 pub use frame_support::Parameter;
 use sp_runtime::{
 	traits::{

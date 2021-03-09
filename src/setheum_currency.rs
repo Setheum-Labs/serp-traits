@@ -11,7 +11,7 @@ use sp_runtime::{
 	traits::{MaybeSerializeDeserialize, AtLeast32BitUnsigned}
 };
 use frame_support::{
-	traits::{ExistenceRequirement, Get, Imbalance, SignedImbalance, WithdrawReasons,}
+	traits::*,
 };
 
 /// Re-expected for the macro.
@@ -222,18 +222,6 @@ pub trait ReservableCurrency<AccountId>: Currency<AccountId> {
 		value: Self::Balance
 	) -> (Self::NegativeImbalance, Self::Balance);
 
-    /// Burns `value` from reserved balance of `who`. This function 
-	/// returns `TotalIssuanceUnderflow` as error if underflow. Increases `total_issuance`.
-	/// It changes `TotalIssuance`.
-	/// Is a no-op if the `value` to be deposited is zero.
-	fn burn_reserved( who: &AccountId, value: Self::Balance) -> DispatchResult;
-
-    /// Mints `value` to reserved balance of `who`. This function 
-	/// returns `TotalIssuanceOverflow` as error if overflow. Increases `total_issuance`.
-	/// It changes `TotalIssuance`.
-	/// Is a no-op if the `value` to be deposited is zero.
-	fn create_reserved( who: &AccountId, value: Self::Balance) -> DispatchResult;
-
 	/// The amount of the balance of a given account that is externally reserved; this can still get
 	/// slashed, but gets slashed last of all.
 	///
@@ -279,10 +267,6 @@ pub trait ReservableCurrency<AccountId>: Currency<AccountId> {
 		status: BalanceStatus,
 	) -> result::Result<Self::Balance, DispatchError>;
 }
-
-/// An identifier for a lock. Used for disambiguating different locks so that
-/// they can be individually replaced or removed.
-pub type LockIdentifier = [u8; 8];
 
 /// A currency whose accounts can have liquidity restrictions.
 pub trait LockableCurrency<AccountId>: Currency<AccountId> {
