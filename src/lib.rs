@@ -11,11 +11,7 @@ use sp_std::{
 use serde::{Deserialize, Serialize};
 
 pub use auction::{Auction, AuctionHandler, AuctionInfo, OnNewBidResult};
-pub use currency::{
-	BalanceStatus, Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, 
-	Stp258AssetReservable, LockIdentifier, Stp258Currency, Stp258CurrencyExtended, 
-	Stp258CurrencyLockable, Stp258CurrencyReservable, OnDust,
-};
+
 pub use data_provider::{DataFeeder, DataProvider, DataProviderExtended};
 pub use get_by_key::GetByKey;
 pub use nft::NFT;
@@ -24,11 +20,14 @@ pub use rewards::RewardHandler;
 pub use serp_market::Market;
 pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
 pub use setheum_currency::{Currency, LockableCurrency, ReservableCurrency};
-
+pub use stp258_currency::{
+	BalanceStatus, Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, 
+	Stp258AssetReservable, LockIdentifier, Stp258Currency, Stp258CurrencyExtended, 
+	Stp258CurrencyLockable, Stp258CurrencyReservable, OnDust,
+};
 pub mod account;
 pub mod arithmetic;
 pub mod auction;
-pub mod currency;
 pub mod data_provider;
 pub mod get_by_key;
 pub mod nft;
@@ -37,7 +36,7 @@ pub mod rewards;
 pub mod serp_market;
 pub mod serp_tes;
 pub mod setheum_currency;
-
+pub mod stp258_currency;
 
 /// New data handler
 #[impl_trait_for_tuples::impl_for_tuples(30)]
