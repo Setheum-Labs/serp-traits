@@ -139,12 +139,6 @@ pub trait Stp258CurrencyReservable<AccountId>: Stp258Currency<AccountId> {
 	/// be returned.
 	fn slash_reserved(currency_id: Self::CurrencyId, who: &AccountId, value: Self::Balance) -> Self::Balance;
 
-	/// Adds up to `value` to reserved balance of `who`. This function
-	/// cannot fail.
-	///
-	/// As much funds up to `value` will be added as possible.
-	fn create_reserved(currency_id: Self::CurrencyId, who: &AccountId, value: Self::Balance) -> Self::Balance;
-
 	/// The amount of the balance of a given account that is externally
 	/// reserved; this can still get slashed, but gets slashed last of all.
 	///
@@ -295,13 +289,6 @@ pub trait Stp258AssetReservable<AccountId>: Stp258Asset<AccountId> {
 	/// balance of `who` is less than `value`, then a non-zero second item will
 	/// be returned.
 	fn slash_reserved(who: &AccountId, value: Self::Balance) -> Self::Balance;
-
-	/// Adds up to `value` to reserved balance of `who`. This function
-	/// cannot fail.
-	///
-	/// As much funds up to `value` will be added as possible.
-	fn create_reserved(who: &AccountId, value: Self::Balance) -> Self::Balance;
-
 
 	/// The amount of the balance of a given account that is externally
 	/// reserved; this can still get slashed, but gets slashed last of all.
