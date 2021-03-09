@@ -1,5 +1,6 @@
 use codec::FullCodec;
-pub use frame_support::{traits::{BalanceStatus, LockIdentifier}, Parameter};
+use crate::setheum_currency::{BalanceStatus, LockIdentifier};
+pub use frame_support::Parameter;
 use sp_runtime::{
 	traits::{
 		AtLeast32BitUnsigned, MaybeSerializeDeserialize, Member,
