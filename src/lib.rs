@@ -19,11 +19,12 @@ pub use price::{DefaultPriceProvider, PriceProvider};
 pub use rewards::RewardHandler;
 pub use serp_market::Market;
 pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
-pub use setheum_currency::{BalanceStatus, Currency, LockIdentifier, LockableCurrency, ReservableCurrency};
 pub use stp258_currency::{
+	BalanceStatus, Currency, LockIdentifier, 
+	LockableCurrency, OnDust, ReservableCurrency,
 	Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, 
 	Stp258AssetReservable, Stp258Currency, Stp258CurrencyExtended, 
-	Stp258CurrencyLockable, Stp258CurrencyReservable, OnDust,
+	Stp258CurrencyLockable, Stp258CurrencyReservable,
 };
 pub mod account;
 pub mod arithmetic;
@@ -35,7 +36,6 @@ pub mod price;
 pub mod rewards;
 pub mod serp_market;
 pub mod serp_tes;
-pub mod setheum_currency;
 pub mod stp258_currency;
 
 /// New data handler
