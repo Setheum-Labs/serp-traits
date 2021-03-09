@@ -18,7 +18,7 @@ use sp_runtime::{
 	},
 };
 use sp_staking::SessionIndex;
-use frame_support::{Parameter, StorageMap, Weight};
+use frame_support::{Parameter, StorageMap, weights::Weight};
 use bitflags::bitflags;
 use impl_trait_for_tuples::impl_for_tuples;
 
