@@ -23,6 +23,7 @@ pub use price::{DefaultPriceProvider, PriceProvider};
 pub use rewards::RewardHandler;
 pub use serp_market::Market;
 pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
+pub use serp_frame_support::*;
 
 pub mod account;
 pub mod arithmetic;
@@ -35,6 +36,7 @@ pub mod price;
 pub mod rewards;
 pub mod serp_market;
 pub mod serp_tes;
+pub mod serp_frame_support;
 
 
 /// New data handler
