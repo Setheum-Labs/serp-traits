@@ -1,24 +1,10 @@
-// This file is part of Substrate.
-
-// Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
-// SPDX-License-Identifier: Apache-2.0
-
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// 	http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
+//! Traits for SERP-FRAME
+//! From FRAME Traits (frame_support::traits) to SERP-FRAME Traits (serp_frame_support::traits)
+//!
 //! Traits for FRAME.
 //!
 //! NOTE: If you're looking for `parameter_types`, it has moved in to the top-level module.
-
+//! Only a few but significant changes from `frame_support` on Currency(SetheumCurrency).
 use sp_std::{prelude::*, result, marker::PhantomData, ops::Div, fmt::Debug};
 use codec::{FullCodec, Codec, Encode, Decode, EncodeLike};
 use sp_core::u32_trait::Value as U32;
@@ -32,9 +18,7 @@ use sp_runtime::{
 	},
 };
 use sp_staking::SessionIndex;
-use crate::dispatch::Parameter;
-use crate::storage::StorageMap;
-use crate::weights::Weight;
+use frame_support::{Parameter, StorageMap, Weight};
 use bitflags::bitflags;
 use impl_trait_for_tuples::impl_for_tuples;
 
@@ -940,8 +924,9 @@ impl<
 	}
 }
 
+//! From Currency (frame_support::traits::Currency) to SetheumCurrency (serp_support::traits::Currency)
 /// Abstraction over a fungible assets system.
-pub trait Currency<AccountId> {
+pub trait SetheumCurrency<AccountId> {
 	/// The balance of an account.
 	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug +
 		Default;
@@ -1040,6 +1025,7 @@ pub trait Currency<AccountId> {
 		value: Self::Balance
 	) -> (Self::NegativeImbalance, Self::Balance);
 
+	
 	/// Mints `value` to the free balance of `who`.
 	///
 	/// If `who` doesn't exist, nothing is done and an Err returned.
