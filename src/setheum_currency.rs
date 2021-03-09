@@ -222,22 +222,17 @@ pub trait ReservableCurrency<AccountId>: Currency<AccountId> {
 		value: Self::Balance
 	) -> (Self::NegativeImbalance, Self::Balance);
 
-    /// Burns up to `value` from reserved balance of `who`. This function cannot fail.
-	///
-	/// As much funds up to `value` will be burnt as possible. If the reserve balance of `who`
-	/// is less than `value`, then a non-zero second item will be returned.
-	fn burn_reserved(
-		who: &AccountId,
-		value: Self::Balance,
-	) -> (Self::NegativeImbalance, Self::Balance);
+    /// Burns `value` from reserved balance of `who`. This function 
+	/// returns `TotalIssuanceUnderflow` as error if underflow. Increases `total_issuance`.
+	/// It changes `TotalIssuance`.
+	/// Is a no-op if the `value` to be deposited is zero.
+	fn burn_reserved( who: &AccountId, value: Self::Balance) -> DispatchResult;
 
-    /// Mints `value` to the reserved balance of `who`. This function cannot fail.
-	///
-	/// As much funds up to `value` will be added as possible.
-	fn create_reserved(
-		who: &AccountId,
-		value: Self::Balance
-	) -> (Self::PositiveImbalance, Self::Balance);
+    /// Mints `value` to reserved balance of `who`. This function 
+	/// returns `TotalIssuanceOverflow` as error if overflow. Increases `total_issuance`.
+	/// It changes `TotalIssuance`.
+	/// Is a no-op if the `value` to be deposited is zero.
+	fn create_reserved( who: &AccountId, value: Self::Balance) -> DispatchResult;
 
 	/// The amount of the balance of a given account that is externally reserved; this can still get
 	/// slashed, but gets slashed last of all.
