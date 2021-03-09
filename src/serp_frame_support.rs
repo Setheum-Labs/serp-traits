@@ -1115,7 +1115,7 @@ pub enum BalanceStatus {
 }
 
 /// A currency where funds can be reserved from the user.
-pub trait ReservableCurrency<AccountId>: Currency<AccountId> {
+pub trait SetheumReservableCurrency<AccountId>: Currency<AccountId> {
 	/// Same result as `reserve(who, value)` (but without the side-effects) assuming there
 	/// are no balance changes in the meantime.
 	fn can_reserve(who: &AccountId, value: Self::Balance) -> bool;
@@ -1197,7 +1197,7 @@ pub trait ReservableCurrency<AccountId>: Currency<AccountId> {
 pub type LockIdentifier = [u8; 8];
 
 /// A currency whose accounts can have liquidity restrictions.
-pub trait LockableCurrency<AccountId>: Currency<AccountId> {
+pub trait SetheumLockableCurrency<AccountId>: Currency<AccountId> {
 	/// The quantity used to denote time; usually just a `BlockNumber`.
 	type Moment;
 
