@@ -19,8 +19,8 @@ pub use price::{DefaultPriceProvider, PriceProvider};
 pub use rewards::RewardHandler;
 pub use serp_market::Market;
 pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
-pub use setheum_currency::{Currency, LockableCurrency, ReservableCurrency};
-pub use stp258_currency::{
+pub use currency::{
+	BalanceStatus, LockIdentifier, 
 	Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, 
 	Stp258AssetReservable, Stp258Currency, Stp258CurrencyExtended, 
 	Stp258CurrencyLockable, Stp258CurrencyReservable, OnDust,
@@ -35,8 +35,7 @@ pub mod price;
 pub mod rewards;
 pub mod serp_market;
 pub mod serp_tes;
-pub mod setheum_currency;
-pub mod stp258_currency;
+pub mod currency;
 
 /// New data handler
 #[impl_trait_for_tuples::impl_for_tuples(30)]
