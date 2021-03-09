@@ -924,7 +924,6 @@ impl<
 	}
 }
 
-//! From Currency (frame_support::traits::Currency) to SetheumCurrency (serp_support::traits::Currency)
 /// Abstraction over a fungible assets system.
 pub trait SetheumCurrency<AccountId> {
 	/// The balance of an account.
