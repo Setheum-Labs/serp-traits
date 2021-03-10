@@ -25,6 +25,11 @@ pub use stp258_currency::{
 	Stp258AssetReservable, Stp258Currency, Stp258CurrencyExtended, 
 	Stp258CurrencyLockable, Stp258CurrencyReservable, OnDust,
 };
+pub use stp258_stable_currency::{
+	Stp258StableCurrency, Stp258StableCurrencyExtended, 
+	Stp258StableCurrencyLockable, Stp258StableCurrencyReservable, OnStp258Dust,
+};
+
 pub mod account;
 pub mod arithmetic;
 pub mod auction;
@@ -37,6 +42,7 @@ pub mod serp_market;
 pub mod serp_tes;
 pub mod setheum_currency;
 pub mod stp258_currency;
+pub mod stp258_stable_currency;
 
 /// New data handler
 #[impl_trait_for_tuples::impl_for_tuples(30)]
