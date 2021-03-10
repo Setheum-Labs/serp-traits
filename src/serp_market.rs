@@ -1,14 +1,23 @@
 use codec::FullCodec;
+use crate::DataProvider;
+use fixed::{types::extra::U64, FixedU128};
+use frame_support::Parameter;
 use sp_runtime::{
 	traits::{
-        AtLeast32Bit, MaybeSerializeDeserialize,
+        AtLeast32Bit, CheckedDiv, MaybeSerializeDeserialize, Member
     }, 
     DispatchResult,
 };
 use sp_std::{
 	cmp::{Eq, PartialEq},
+	marker::PhantomData, 
 	fmt::Debug,
 };
+
+/// A trait to provide relative price for two currencies
+pub trait MarketPriceProvider<CurrencyId, Price> {
+	fn get_price(base: CurrencyId, quote: CurrencyId) -> Option<Price>;
+}
 
 /// Abstraction over a serping market system for the Setheum Elastic Reserve Protocol (SERP) Market.
 pub trait Market<CurrencyId, AccountId,  Balance, Price, Source, SerpQuote> {
@@ -40,4 +49,7 @@ pub trait Market<CurrencyId, AccountId,  Balance, Price, Source, SerpQuote> {
 		serpdown_from: AccountId,
 		new_supply: Balance,
 	) -> DispatchResult;
+
+	/// Calculate the amount of price change from a fraction given as `numerator` and `denominator`.
+	fn calculate_price_change(currency_id: Self::CurrencyId, numerator: u64, denominator: u64, supply: u64) -> u64;
 }
