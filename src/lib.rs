@@ -21,13 +21,13 @@ pub use serp_market::Market;
 pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
 pub use setheum_currency::{Currency, LockableCurrency, ReservableCurrency};
 pub use stp258_currency::{
-	Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, 
+	OnDust, Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, 
 	Stp258AssetReservable, Stp258Currency, Stp258CurrencyExtended, 
-	Stp258CurrencyLockable, Stp258CurrencyReservable, OnDust,
+	Stp258CurrencyLockable, Stp258CurrencyReservable,
 };
 pub use stp258_stable_currency::{
-	Stp258StableCurrency, Stp258StableCurrencyExtended, 
-	Stp258StableCurrencyLockable, Stp258StableCurrencyReservable, OnStp258Dust,
+	OnStp258Dust, Stp258StableCurrency, Stp258StableCurrencyExtended, 
+	Stp258StableCurrencyLockable, Stp258StableCurrencyReservable,
 };
 
 pub mod account;
