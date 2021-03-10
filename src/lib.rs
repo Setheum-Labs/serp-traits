@@ -26,7 +26,7 @@ pub use stp258_currency::{
 	Stp258CurrencyLockable, Stp258CurrencyReservable,
 };
 pub use stp258_stable_currency::{
-	OnStp258Dust, Stp258StableCurrency, Stp258StableCurrencyExtended, 
+	Stp258StableCurrency, Stp258StableCurrencyExtended, 
 	Stp258StableCurrencyLockable, Stp258StableCurrencyReservable,
 };
 
