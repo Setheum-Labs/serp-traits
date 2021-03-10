@@ -17,16 +17,18 @@ pub trait Stp258StableCurrency<AccountId> {
 	/// The currency identifier.
 	type CurrencyId: FullCodec + Eq + PartialEq + Copy + MaybeSerializeDeserialize + Debug;
 
-	/// The balance of an account and the amount of Stp258Currency that are meant to track the value.
+	/// The balance of an account.
 	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
+	
+	/// The amount of Stp258Currency that are meant to track the value.
 	type BaseUnit: AtLeast32BitUnsigned 
-	+ TryInto<Self::Balance> 
-	+ TryFrom<Self::Balance> 
-	+ FullCodec 
-	+ Copy 
-	+ MaybeSerializeDeserialize 
-	+ Debug 
-	+ Default;
+		+ TryInto<Self::Balance> 
+		+ TryFrom<Self::Balance> 
+		+ FullCodec 
+		+ Copy 
+		+ MaybeSerializeDeserialize 
+		+ Debug 
+		+ Default;
 
 	// Public immutables
 
