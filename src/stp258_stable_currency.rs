@@ -17,34 +17,29 @@ pub trait Stp258StableCurrency<AccountId> {
 	/// The currency identifier.
 	type CurrencyId: FullCodec + Eq + PartialEq + Copy + MaybeSerializeDeserialize + Debug;
 
-	/// The balance of an account and the amount of Stp258Currency that are meant to track the value.
+	/// The balance of an account.
 	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
-	type BaseUnit: AtLeast32BitUnsigned 
-	+ TryInto<Self::Balance> 
-	+ TryFrom<Self::Balance> 
-	+ FullCodec 
-	+ Copy 
-	+ MaybeSerializeDeserialize 
-	+ Debug 
-	+ Default;
 
+	/// The base unit of a currency.
+	type BaseUnit: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
+	
 	// Public immutables
 
 	/// Existential deposit of `currency_id`.
-	fn minimum_balance(currency_id: Self::CurrencyId) -> Self::BaseUnit;
+	fn minimum_balance(currency_id: Self::CurrencyId) -> Self::Balance;
 
 	/// The total amount of issuance of `currency_id`.
-	fn total_issuance(currency_id: Self::CurrencyId) -> Self::BaseUnit;
+	fn total_issuance(currency_id: Self::CurrencyId) -> Self::Balance;
 
 	// The combined balance of `who` under `currency_id`.
-	fn total_balance(currency_id: Self::CurrencyId, who: &AccountId) -> Self::BaseUnit;
+	fn total_balance(currency_id: Self::CurrencyId, who: &AccountId) -> Self::Balance;
 
 	// The free balance of `who` under `currency_id`.
-	fn free_balance(currency_id: Self::CurrencyId, who: &AccountId) -> Self::BaseUnit;
+	fn free_balance(currency_id: Self::CurrencyId, who: &AccountId) -> Self::Balance;
 
 	/// A dry-run of `withdraw`. Returns `Ok` iff the account is able to make a
 	/// withdrawal of the given amount.
-	fn ensure_can_withdraw(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::BaseUnit) -> DispatchResult;
+	fn ensure_can_withdraw(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::Balance, base_unit: Self::BaseUnit) -> DispatchResult;
 
 	// Public mutables
 
@@ -53,35 +48,36 @@ pub trait Stp258StableCurrency<AccountId> {
 		currency_id: Self::CurrencyId,
 		from: &AccountId,
 		to: &AccountId,
-		amount: Self::BaseUnit,
+		amount: Self::Balance,
+		base_unit: Self::BaseUnit,
 	) -> DispatchResult;
 
 	/// Add `amount` to the balance of `who` under `currency_id` and increase
 	/// total issuance.
-	fn deposit(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::BaseUnit) -> DispatchResult;
+	fn deposit(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::Balance, base_unit: Self::BaseUnit) -> DispatchResult;
 
 	/// Remove `amount` from the balance of `who` under `currency_id` and reduce
 	/// total issuance.
-	fn withdraw(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::BaseUnit) -> DispatchResult;
+	fn withdraw(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::Balance, base_unit: Self::BaseUnit) -> DispatchResult;
 
 	/// Same result as `slash(currency_id, who, value)` (but without the
 	/// side-effects) assuming there are no balance changes in the meantime and
 	/// only the reserved balance is not taken into account.
-	fn can_slash(currency_id: Self::CurrencyId, who: &AccountId, value: Self::BaseUnit) -> bool;
+	fn can_slash(currency_id: Self::CurrencyId, who: &AccountId, value: Self::Balance, base_unit: Self::BaseUnit) -> bool;
 
 	/// Deduct the balance of `who` by up to `amount`.
 	///
 	/// As much funds up to `amount` will be deducted as possible.  If this is
 	/// less than `amount`,then a non-zero value will be returned.
-	fn slash(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::BaseUnit) -> Self::BaseUnit;
+	fn slash(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::Balance, base_unit: Self::BaseUnit) -> Self::Balance;
 }
 
-/// Extended `Stp258Currency` with additional helper types and methods.
+/// Extended `Stp258StableCurrency` with additional helper types and methods.
 pub trait Stp258StableCurrencyExtended<AccountId>: Stp258StableCurrency<AccountId> {
 	/// The type for balance related operations, typically signed int.
 	type Amount: arithmetic::Signed
-		+ TryInto<Self::BaseUnit>
-		+ TryFrom<Self::BaseUnit>
+		+ TryInto<Self::Balance>
+		+ TryFrom<Self::Balance>
 		+ arithmetic::SimpleArithmetic
 		+ Codec
 		+ Copy
@@ -91,7 +87,7 @@ pub trait Stp258StableCurrencyExtended<AccountId>: Stp258StableCurrency<AccountI
 
 	/// Add or remove abs(`by_amount`) from the balance of `who` under
 	/// `currency_id`. If positive `by_amount`, do add, else do remove.
-	fn update_balance(currency_id: Self::CurrencyId, who: &AccountId, by_amount: Self::Amount) -> DispatchResult;
+	fn update_balance(currency_id: Self::CurrencyId, who: &AccountId, by_amount: Self::Amount, base_unit: Self::BaseUnit) -> DispatchResult;
 }
 
 /// A fungible multi-stable-currency system whose accounts can have liquidity
@@ -111,7 +107,8 @@ pub trait Stp258StableCurrencyLockable<AccountId>: Stp258StableCurrency<AccountI
 		lock_id: LockIdentifier,
 		currency_id: Self::CurrencyId,
 		who: &AccountId,
-		amount: Self::BaseUnit,
+		amount: Self::Balance,
+		base_unit: Self::BaseUnit,
 	) -> DispatchResult;
 
 	/// Changes a balance lock (selected by `lock_id`) so that it becomes less
@@ -126,7 +123,8 @@ pub trait Stp258StableCurrencyLockable<AccountId>: Stp258StableCurrency<AccountI
 		lock_id: LockIdentifier,
 		currency_id: Self::CurrencyId,
 		who: &AccountId,
-		amount: Self::BaseUnit,
+		amount: Self::Balance,
+		base_unit: Self::BaseUnit,
 	) -> DispatchResult;
 
 	/// Remove an existing lock.
@@ -137,7 +135,7 @@ pub trait Stp258StableCurrencyLockable<AccountId>: Stp258StableCurrency<AccountI
 pub trait Stp258StableCurrencyReservable<AccountId>: Stp258StableCurrency<AccountId> {
 	/// Same result as `reserve(who, value)` (but without the side-effects)
 	/// assuming there are no balance changes in the meantime.
-	fn can_reserve(currency_id: Self::CurrencyId, who: &AccountId, value: Self::BaseUnit) -> bool;
+	fn can_reserve(currency_id: Self::CurrencyId, who: &AccountId, value: Self::Balance, base_unit: Self::BaseUnit) -> bool;
 
 	/// Deducts up to `value` from reserved balance of `who`. This function
 	/// cannot fail.
@@ -145,19 +143,7 @@ pub trait Stp258StableCurrencyReservable<AccountId>: Stp258StableCurrency<Accoun
 	/// As much funds up to `value` will be deducted as possible. If the reserve
 	/// balance of `who` is less than `value`, then a non-zero second item will
 	/// be returned.
-	fn slash_reserved(currency_id: Self::CurrencyId, who: &AccountId, value: Self::BaseUnit) -> Self::BaseUnit;
-
-	/// Burns `value` from reserved balance of `who`. This function 
-	/// returns `TotalIssuanceUnderflow` as error if underflow. Increases `total_issuance`.
-	/// It changes `TotalIssuance`.
-	/// Is a no-op if the `value` to be deposited is zero.
-	fn burn_reserved(currency_id: Self::CurrencyId, who: &AccountId, value: Self::BaseUnit,) -> DispatchResult;
-
-	/// Mints `value` to reserved balance of `who`. This function 
-	/// returns `TotalIssuanceOverflow` as error if overflow. Increases `total_issuance`.
-	/// It changes `TotalIssuance`.
-	/// Is a no-op if the `value` to be deposited is zero.
-	fn create_reserved(currency_id: Self::CurrencyId, who: &AccountId, value: Self::BaseUnit) -> DispatchResult;
+	fn slash_reserved(currency_id: Self::CurrencyId, who: &AccountId, value: Self::Balance, base_unit: Self::BaseUnit) -> Self::Balance;
 
 	/// The amount of the balance of a given account that is externally
 	/// reserved; this can still get slashed, but gets slashed last of all.
@@ -165,14 +151,14 @@ pub trait Stp258StableCurrencyReservable<AccountId>: Stp258StableCurrency<Accoun
 	/// This balance is a 'reserve' balance that other subsystems use in order
 	/// to set aside tokens that are still 'owned' by the account holder, but
 	/// which are suspendable.
-	fn reserved_balance(currency_id: Self::CurrencyId, who: &AccountId) -> Self::BaseUnit;
+	fn reserved_balance(currency_id: Self::CurrencyId, who: &AccountId) -> Self::Balance;
 
 	/// Moves `value` from balance to reserved balance.
 	///
 	/// If the free balance is lower than `value`, then no funds will be moved
 	/// and an `Err` will be returned to notify of this. This is different
 	/// behavior than `unreserve`.
-	fn reserve(currency_id: Self::CurrencyId, who: &AccountId, value: Self::BaseUnit) -> DispatchResult;
+	fn reserve(currency_id: Self::CurrencyId, who: &AccountId, value: Self::Balance, base_unit: Self::BaseUnit) -> DispatchResult;
 
 	/// Moves up to `value` from reserved balance to free balance. This function
 	/// cannot fail.
@@ -184,7 +170,7 @@ pub trait Stp258StableCurrencyReservable<AccountId>: Stp258StableCurrency<Accoun
 	/// # NOTES
 	///
 	/// - This is different from `reserve`.
-	fn unreserve(currency_id: Self::CurrencyId, who: &AccountId, value: Self::BaseUnit) -> Self::BaseUnit;
+	fn unreserve(currency_id: Self::CurrencyId, who: &AccountId, value: Self::Balance, base_unit: Self::BaseUnit) -> Self::Balance;
 
 	/// Moves up to `value` from reserved balance of account `slashed` to
 	/// balance of account `beneficiary`. `beneficiary` must exist for this to
@@ -198,16 +184,8 @@ pub trait Stp258StableCurrencyReservable<AccountId>: Stp258StableCurrency<Accoun
 		currency_id: Self::CurrencyId,
 		slashed: &AccountId,
 		beneficiary: &AccountId,
-		value: Self::BaseUnit,
+		value: Self::Balance,
+		base_unit: Self::BaseUnit,
 		status: BalanceStatus,
-	) -> result::Result<Self::BaseUnit, DispatchError>;
-}
-
-/// Handler for account which has dust, need to burn or recycle it
-pub trait OnStp258Dust<AccountId, CurrencyId, BaseUnit> {
-	fn on_stp258_dust(who: &AccountId, currency_id: CurrencyId, amount: BaseUnit);
-}
-
-impl<AccountId, CurrencyId, BaseUnit> OnStp258Dust<AccountId, CurrencyId, BaseUnit> for () {
-	fn on_stp258_dust(_: &AccountId, _: CurrencyId, _: BaseUnit) {}
+	) -> result::Result<Self::Balance, DispatchError>;
 }
