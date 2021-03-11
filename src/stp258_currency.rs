@@ -1,9 +1,8 @@
 use crate::arithmetic;
-use codec::{Codec, FullCodec};
-use frame_support::traits::{BalanceStatus, LockIdentifier};
+use codec::{FullCodec, Codec, Encode, Decode};
 use sp_runtime::{
 	traits::{AtLeast32BitUnsigned, MaybeSerializeDeserialize},
-	DispatchError, DispatchResult,
+	DispatchError, DispatchResult, RuntimeDebug,
 };
 use sp_std::{
 	cmp::{Eq, PartialEq},
@@ -66,6 +65,20 @@ pub trait Stp258Currency<AccountId> {
 	/// As much funds up to `amount` will be deducted as possible.  If this is
 	/// less than `amount`,then a non-zero value will be returned.
 	fn slash(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::Balance) -> Self::Balance;
+}
+
+/// An identifier for a lock. Used for disambiguating different locks so that
+/// they can be individually replaced or removed.
+pub type LockIdentifier = [u8; 8];
+
+
+/// Status of funds.
+#[derive(PartialEq, Eq, Clone, Copy, Encode, Decode, RuntimeDebug)]
+pub enum BalanceStatus {
+	/// Funds are free, as corresponding to `free` item in Balances.
+	Free,
+	/// Funds are reserved, as corresponding to `reserved` item in Balances.
+	Reserved,
 }
 
 /// Extended `Stp258Currency` with additional helper types and methods.
