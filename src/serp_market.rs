@@ -13,7 +13,6 @@ use sp_std::{
 	marker::PhantomData, 
 	fmt::Debug,
 };
-
 /// A trait to provide relative price for two currencies
 pub trait MarketPriceProvider<CurrencyId, Price> {
 	fn get_price(base: CurrencyId, quote: CurrencyId) -> Option<Price>;
