@@ -4,7 +4,7 @@ use fixed::{types::extra::U64, FixedU128};
 use frame_support::Parameter;
 use sp_runtime::{
 	traits::{
-        AtLeast32Bit, MaybeSerializeDeserialize
+        AtLeast32Bit, Member, MaybeDisplay, MaybeSerializeDeserialize
     }, 
     DispatchResult,
 };
@@ -19,6 +19,8 @@ pub trait SerpMarket<CurrencyId, AccountId,  Balance> {
 	type Balance: AtLeast32Bit + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
     /// The currency type in trade.
 	type CurrencyId: FullCodec + Eq + PartialEq + Copy + MaybeSerializeDeserialize + Debug;
+
+	type AccountId: Parameter + Member + MaybeSerializeDeserialize + Debug + MaybeDisplay + Ord + Default;
 
 	/// A trait to provide relative `base_price` of `base_settcurrency_id`. 
 	/// The settcurrency `Price` is `base_price * base_unit`.
