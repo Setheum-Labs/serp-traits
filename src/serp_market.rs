@@ -4,13 +4,12 @@ use fixed::{types::extra::U64, FixedU128};
 use frame_support::Parameter;
 use sp_runtime::{
 	traits::{
-        AtLeast32Bit, CheckedDiv, MaybeSerializeDeserialize, Member
+        AtLeast32Bit, MaybeSerializeDeserialize
     }, 
     DispatchResult,
 };
 use sp_std::{
 	cmp::{Eq, PartialEq},
-	marker::PhantomData, 
 	fmt::Debug,
 };
 
