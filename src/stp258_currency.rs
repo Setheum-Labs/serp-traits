@@ -1,9 +1,10 @@
 use crate::arithmetic;
 use codec::{FullCodec, Codec, Encode, Decode};
 use sp_runtime::{
-	traits::{AtLeast32BitUnsigned, MaybeSerializeDeserialize},
+	traits::{AtLeast32BitUnsigned, Member, MaybeDisplay, MaybeSerializeDeserialize},
 	DispatchError, DispatchResult, RuntimeDebug,
 };
+use frame_support::Parameter;
 use sp_std::{
 	cmp::{Eq, PartialEq},
 	convert::{TryFrom, TryInto},
@@ -18,6 +19,8 @@ pub trait Stp258Currency<AccountId> {
 
 	/// The balance of an account.
 	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
+
+	type AccountId: Parameter + Member + MaybeSerializeDeserialize + Debug + MaybeDisplay + Ord + Default;
 
 	// Public immutables
 
