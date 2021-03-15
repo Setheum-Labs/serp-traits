@@ -20,8 +20,6 @@ pub trait Stp258Currency<AccountId> {
 	/// The balance of an account.
 	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
 
-	type AccountId: Parameter + Member + MaybeSerializeDeserialize + Debug + MaybeDisplay + Ord + Default;
-
 	// Public immutables
 
 	/// Existential deposit of `currency_id`.
