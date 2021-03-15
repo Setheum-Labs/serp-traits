@@ -1,6 +1,4 @@
 use codec::FullCodec;
-use crate::DataProvider;
-use fixed::{types::extra::Self::Balance, FixedU128};
 use frame_support::Parameter;
 use sp_runtime::{
 	traits::{
@@ -49,10 +47,10 @@ pub trait SerpMarket<CurrencyId, AccountId,  Balance> {
 	/// `mint_rate = serp_quote_multiple`, and with `(price/base_unit) - 1 = price_change`.
 	///
 	/// Calculate the amount of currency price for SerpMarket's SerpQuote from a fraction given as `numerator` and `denominator`.
-	fn quote_serp_price(price: Self::Balance) -> Self::Balance;
+	fn quote_serp_price(base_currency_id: Self::CurrencyId, price: Self::Balance) -> Self::Balance;
 
 	/// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
-	fn calculate_supply_change(new_price: Self::Balance) -> Self::Balance;
+	fn calculate_supply_change(base_currency_id: Self::CurrencyId, new_price: Self::Balance) -> Self::Balance;
 
 	/// Called when `expand_supply` is received from the SERP.
 	/// Implementation should `deposit` the `amount` to `serpup_to`, 
