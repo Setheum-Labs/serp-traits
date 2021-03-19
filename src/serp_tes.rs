@@ -30,9 +30,6 @@ pub trait SerpTes<AccountId, BlockNumber, CurrencyId, Price> {
 
 	// Public immutables
 
-	/// Contracts or expands the currency supply based on conditions.
-	fn on_block_with_price(block: BlockNumber, currency_id: Self::CurrencyId, price: Price) -> DispatchResult;
-
 	/// Expands (if the price is high) or contracts (if the price is low) the currency supply.
 	fn serp_elast(currency_id: Self::CurrencyId, price: Price) -> DispatchResult;
 
