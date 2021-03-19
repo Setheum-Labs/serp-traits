@@ -39,7 +39,7 @@ pub trait Stp258StableCurrency<AccountId> {
 
 	/// A dry-run of `withdraw`. Returns `Ok` iff the account is able to make a
 	/// withdrawal of the given amount.
-	fn ensure_can_withdraw(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::Balance, base_unit: Self::BaseUnit) -> DispatchResult;
+	fn ensure_can_withdraw(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::Balance) -> DispatchResult;
 
 	// Public mutables
 
@@ -54,22 +54,22 @@ pub trait Stp258StableCurrency<AccountId> {
 
 	/// Add `amount` to the balance of `who` under `currency_id` and increase
 	/// total issuance.
-	fn deposit(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::Balance, base_unit: Self::BaseUnit) -> DispatchResult;
+	fn deposit(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::Balance) -> DispatchResult;
 
 	/// Remove `amount` from the balance of `who` under `currency_id` and reduce
 	/// total issuance.
-	fn withdraw(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::Balance, base_unit: Self::BaseUnit) -> DispatchResult;
+	fn withdraw(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::Balance) -> DispatchResult;
 
 	/// Same result as `slash(currency_id, who, value)` (but without the
 	/// side-effects) assuming there are no balance changes in the meantime and
 	/// only the reserved balance is not taken into account.
-	fn can_slash(currency_id: Self::CurrencyId, who: &AccountId, value: Self::Balance, base_unit: Self::BaseUnit) -> bool;
+	fn can_slash(currency_id: Self::CurrencyId, who: &AccountId, value: Self::Balance) -> bool;
 
 	/// Deduct the balance of `who` by up to `amount`.
 	///
 	/// As much funds up to `amount` will be deducted as possible.  If this is
 	/// less than `amount`,then a non-zero value will be returned.
-	fn slash(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::Balance, base_unit: Self::BaseUnit) -> Self::Balance;
+	fn slash(currency_id: Self::CurrencyId, who: &AccountId, amount: Self::Balance) -> Self::Balance;
 }
 
 /// Extended `Stp258StableCurrency` with additional helper types and methods.
