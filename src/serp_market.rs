@@ -57,7 +57,7 @@ pub trait SerpMarket<CurrencyId, AccountId,  Balance> {
 	fn quote_serpup_price(price: Self::Balance) -> Self::Balance;
 
 	/// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
-	fn calculate_supply_change(new_price: Self::Balance) -> Self::Balance;
+	fn calculate_supply_change(currency_id: Self::CurrencyId, new_price: Self::Balance) -> Self::Balance;
 
 	/// Called when `expand_supply` is received from the SERP.
 	/// Implementation should `deposit` the `amount` to `serpup_to`, 
