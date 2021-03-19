@@ -12,7 +12,7 @@ use sp_std::{
 };
 
 /// Abstraction over a serping market system for the Setheum Elastic Reserve Protocol (SERP) Market.
-pub trait SerpMarket<CurrencyId, AccountId,  Balance> {
+pub trait SerpMarket<CurrencyId, AccountId,  Balance, u64> {
 	/// The price to trade.
 	type Balance: AtLeast32Bit + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
     /// The currency type in trade.
@@ -25,7 +25,7 @@ pub trait SerpMarket<CurrencyId, AccountId,  Balance> {
 	/// For example The `Price` of `JUSD` is `base_price: Price = $1.1 * base_unit: BaseUnit = 1_100`.
 	/// Therefore, the `Price` is got by checking how much `base_currency_peg` can buy `base_unit`, 
 	/// in our example, `1_100` in `base_currency_peg: USD` of `JUSD` can buy `base_unit` of `JUSD` in `USD`.
-	fn get_stable_price(base_settcurrency_id: Self::CurrencyId, base_price: Self::Balance) -> DispatchResult;
+	fn get_stable_price(base_price: u64) -> u64;
 	
 	/// A trait to provide relative price for two currencies. 
 	/// For example, the relative price of `DNAR-JUSD` is `$1_000 / $1.1 = JUSD 1_100`,
@@ -34,11 +34,9 @@ pub trait SerpMarket<CurrencyId, AccountId,  Balance> {
 	/// meaning `DNAR 1` can buy `JUSD 1_000` and therefore `1 DNAR = 0.001 JUSD`.
 	/// But tyhe former is preffered and thus used.
 	fn get_relative_price(
-		base_currency_id: Self::CurrencyId, 
-		base_price: Self::Balance,  
-		quote_currency_id: Self::CurrencyId, 
-		quote_price: Self::Balance
-	) -> DispatchResult;
+		base_price: u64,  
+		quote_price: u64
+	) -> u64;
 
 	/// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpdown, 
 	/// the Serp Quote is `price/base_unit = fraction`, `fraction - 1 = fractioned`, `fractioned * serp_quote_multiple = quotation`,
@@ -47,7 +45,7 @@ pub trait SerpMarket<CurrencyId, AccountId,  Balance> {
 	/// `mint_rate = serp_quote_multiple`, and with `(price/base_unit) - 1 = price_change`.
 	///
 	/// Calculate the amount of currency price for SerpMarket's SerpQuote from a fraction given as `numerator` and `denominator`.
-	fn quote_serpdown_price(base_currency_id: Self::CurrencyId, price: Self::Balance) -> Self::Balance;
+	fn quote_serpdown_price( price: u64) -> u64;
 
 	/// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpup, 
 	/// the Serp Quote is `price/base_unit = fraction`, `fraction - 1 = fractioned`, `fractioned * serp_quote_multiple = quotation`,
@@ -56,8 +54,22 @@ pub trait SerpMarket<CurrencyId, AccountId,  Balance> {
 	/// `mint_rate = serp_quote_multiple`, and with `(price/base_unit) - 1 = price_change`.
 	///
 	/// Calculate the amount of currency price for SerpMarket's SerpQuote from a fraction given as `numerator` and `denominator`.
-	fn quote_serpup_price(base_currency_id: Self::CurrencyId, price: Self::Balance) -> Self::Balance;
+	fn quote_serpup_price(price: u64) -> u64;
 
 	/// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
-	fn calculate_supply_change(base_currency_id: Self::CurrencyId, new_price: Self::Balance) -> Self::Balance;
+	fn calculate_supply_change(new_price: u64) -> u64;
+
+	/// Called when `expand_supply` is received from the SERP.
+	/// Implementation should `deposit` the `amount` to `serpup_to`, 
+	/// then `amount` will be slashed from `serpup_from` and update
+	/// `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
+	/// the `native_currency` used to expand settcurrency supply.
+	fn expand_supply(currency_id: Self::CurrencyId, expand_by: Self::Balance, quote_price: Self::Balance, base_price: u64) -> DispatchResult;
+
+	/// Called when `contract_supply` is received from the SERP.
+	/// Implementation should `deposit` the `base_currency_id` (The Native Currency) 
+	/// of `amount` to `serpup_to`, then `amount` will be slashed from `serpup_from` 
+	/// and update `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
+	/// the `native_currency` used to contract settcurrency supply.
+	fn contract_supply(currency_id: Self::CurrencyId, contract_by: Self::Balance, quote_price: Self::Balance, base_price: u64) -> DispatchResult;
 }
