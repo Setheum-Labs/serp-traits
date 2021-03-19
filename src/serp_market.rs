@@ -40,29 +40,24 @@ pub trait SerpMarket<CurrencyId, AccountId,  Balance> {
 		quote_price: Self::Balance
 	) -> DispatchResult;
 
-	/// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers, 
+	/// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpdown, 
 	/// the Serp Quote is `price/base_unit = fraction`, `fraction - 1 = fractioned`, `fractioned * serp_quote_multiple = quotation`,
 	/// `quotation + fraction = quoted` and `quoted` is the price the SERP will pay for serping in full including the serp_quote,
 	///  the fraction is same as `(market_price + (mint_rate * 2))` - where `market-price = price/base_unit`, 
 	/// `mint_rate = serp_quote_multiple`, and with `(price/base_unit) - 1 = price_change`.
 	///
 	/// Calculate the amount of currency price for SerpMarket's SerpQuote from a fraction given as `numerator` and `denominator`.
-	fn quote_serp_price(base_currency_id: Self::CurrencyId, price: Self::Balance) -> Self::Balance;
+	fn quote_serpdown_price(base_currency_id: Self::CurrencyId, price: Self::Balance) -> Self::Balance;
+
+	/// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpup, 
+	/// the Serp Quote is `price/base_unit = fraction`, `fraction - 1 = fractioned`, `fractioned * serp_quote_multiple = quotation`,
+	/// `quotation - fraction = quoted` and `quoted` is the price the SERP will pay for serping in full including the serp_quote,
+	///  the fraction is same as `(market_price + (mint_rate * 2))` - where `market-price = price/base_unit`, 
+	/// `mint_rate = serp_quote_multiple`, and with `(price/base_unit) - 1 = price_change`.
+	///
+	/// Calculate the amount of currency price for SerpMarket's SerpQuote from a fraction given as `numerator` and `denominator`.
+	fn quote_serpup_price(base_currency_id: Self::CurrencyId, price: Self::Balance) -> Self::Balance;
 
 	/// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
 	fn calculate_supply_change(base_currency_id: Self::CurrencyId, new_price: Self::Balance) -> Self::Balance;
-
-	/// Called when `expand_supply` is received from the SERP.
-	/// Implementation should `deposit` the `amount` to `serpup_to`, 
-	/// then `amount` will be slashed from `serpup_from` and update
-	/// `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
-	/// the `native_currency` used to expand settcurrency supply.
-	fn expand_supply(currency_id: Self::CurrencyId, expand_by: Self::Balance, quote_price: Self::Balance) -> DispatchResult;
-
-	/// Called when `contract_supply` is received from the SERP.
-	/// Implementation should `deposit` the `base_currency_id` (The Native Currency) 
-	/// of `amount` to `serpup_to`, then `amount` will be slashed from `serpup_from` 
-	/// and update `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
-	/// the `native_currency` used to contract settcurrency supply.
-	fn contract_supply(currency_id: Self::CurrencyId, contract_by: Self::Balance, quote_price: Self::Balance) -> DispatchResult;
 }
