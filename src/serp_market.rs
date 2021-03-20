@@ -26,7 +26,7 @@ pub trait SerpMarket<AccountId> {
 		native_currency_id: Self::CurrencyId, 
 		stable_currency_id: Self::CurrencyId, 
 		expand_by: Self::Balance, 
-		quote_price: Self::Balance, 
+		//quote_price: Self::Balance, 
 		pay_by_quoted: Self::Balance, 
 		serpers: &AccountId
 	) -> DispatchResult;
@@ -40,7 +40,7 @@ pub trait SerpMarket<AccountId> {
 		native_currency_id: Self::CurrencyId, 
 		stable_currency_id: Self::CurrencyId, 
 		contract_by: Self::Balance, 
-		quote_price: Self::Balance, 
+		//quote_price: Self::Balance, 
 		pay_by_quoted: Self::Balance, 
 		serpers: &AccountId
 	) -> DispatchResult;
