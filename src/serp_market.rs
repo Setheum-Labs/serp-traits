@@ -12,15 +12,6 @@ use sp_std::{
 	fmt::Debug,
 };
 
-/// Status of serping.
-#[derive(PartialEq, Eq, Clone, Copy, Encode, Decode, RuntimeDebug)]
-pub enum SerpingStatus {
-	/// Funds are burnt/removed, as corresponding to reducing balance in contract_supply or expand_supply.
-	SerpRemoved,
-	/// Funds are reserved, as corresponding to increasing balance in contract_supply or expand_supply.
-	SerpAdded,
-}
-
 /// Abstraction over a serping market system for the Setheum Elastic Reserve Protocol (SERP) Market.
 pub trait SerpMarket<AccountId> {
 	/// The price to trade.
@@ -101,4 +92,15 @@ pub trait SerpMarket<AccountId> {
 
 	//// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
 	//// `fn calculate_supply_change(currency_id: Self::CurrencyId, new_price: Self::Balance) -> Self::Balance;`
+
+
+	//// /// Status of serping.
+	//// #[derive(PartialEq, Eq, Clone, Copy, Encode, Decode, RuntimeDebug)]
+	//// pub enum SerpingStatus {
+	//// 	/// Funds are burnt/removed, as corresponding to reducing balance in contract_supply or expand_supply.
+	//// 	SerpRemoved,
+	//// 	/// Funds are reserved, as corresponding to increasing balance in contract_supply or expand_supply.
+	//// 	SerpAdded,
+	//// }
+
 }
