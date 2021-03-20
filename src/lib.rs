@@ -21,7 +21,7 @@ pub use get_by_key::GetByKey;
 pub use nft::NFT;
 pub use price::{DefaultPriceProvider, PriceProvider};
 pub use rewards::RewardHandler;
-pub use serp_market::SerpMarket;
+pub use serp_market::{SerpMarket, SerpingStatus};
 pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
 
 pub mod account;

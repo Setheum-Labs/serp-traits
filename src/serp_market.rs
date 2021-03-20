@@ -1,15 +1,25 @@
-use codec::FullCodec;
+use codec::{FullCodec, Encode, Decode};
 use frame_support::Parameter;
 use sp_runtime::{
 	traits::{
         AtLeast32Bit, Member, MaybeDisplay, MaybeSerializeDeserialize
     }, 
     DispatchResult,
+	RuntimeDebug,
 };
 use sp_std::{
 	cmp::{Eq, PartialEq},
 	fmt::Debug,
 };
+
+/// Status of serping.
+#[derive(PartialEq, Eq, Clone, Copy, Encode, Decode, RuntimeDebug)]
+pub enum SerpingStatus {
+	/// Funds are burnt/removed, as corresponding to reducing balance in contract_supply or expand_supply.
+	SerpRemoved,
+	/// Funds are reserved, as corresponding to increasing balance in contract_supply or expand_supply.
+	SerpAdded,
+}
 
 /// Abstraction over a serping market system for the Setheum Elastic Reserve Protocol (SERP) Market.
 pub trait SerpMarket<AccountId> {
