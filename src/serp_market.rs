@@ -28,7 +28,8 @@ pub trait SerpMarket<AccountId> {
 		expand_by: Self::Balance, 
 		quote_price: Self::Balance, 
 		pay_by_quoted: Self::Balance, 
-		serpers: &AccountId) -> DispatchResult;
+		serpers: &AccountId
+	) -> DispatchResult;
 
 	/// Called when `contract_supply` is received from the SERP.
 	/// Implementation should `deposit` the `base_currency_id` (The Native Currency) 
@@ -41,7 +42,8 @@ pub trait SerpMarket<AccountId> {
 		contract_by: Self::Balance, 
 		quote_price: Self::Balance, 
 		pay_by_quoted: Self::Balance, 
-		serpers: &AccountId) -> DispatchResult;
+		serpers: &AccountId
+	) -> DispatchResult;
 
 
 
