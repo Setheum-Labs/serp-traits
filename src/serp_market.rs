@@ -38,7 +38,7 @@ pub trait SerpMarket<AccountId> {
 	/// Therefore buying the stable currency for more than market price.
 	///
 	/// The quoted amount to pay serpers for serping down supply.
-	fn pay_serpdown_by_quoted(currency_id: Self::CurrencyId, contract_by: Self::Balance, quote_price: Self::Balance, base_price: Self::Balance) -> DispatchResult;
+	fn pay_serpdown_by_quoted(currency_id: Self::CurrencyId, contract_by: Self::Balance, quote_price: Self::Balance) -> DispatchResult;
 
 	/// Called when `expand_supply` is received from the SERP.
 	/// Implementation should `deposit` the `amount` to `serpup_to`, 
@@ -52,7 +52,7 @@ pub trait SerpMarket<AccountId> {
 	/// of `amount` to `serpup_to`, then `amount` will be slashed from `serpup_from` 
 	/// and update `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
 	/// the `native_currency` used to contract settcurrency supply.
-	fn contract_supply(currency_id: Self::CurrencyId, contract_by: Self::Balance, quote_price: Self::Balance, base_price: Self::Balance) -> DispatchResult;
+	fn contract_supply(currency_id: Self::CurrencyId, contract_by: Self::Balance, quote_price: Self::Balance) -> DispatchResult;
 
 
 	//// A trait to provide relative `base_price` of `base_settcurrency_id`. 
