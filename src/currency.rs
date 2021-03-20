@@ -25,6 +25,10 @@ pub trait Stp258Currency<AccountId> {
 	/// Existential deposit of `currency_id`.
 	fn minimum_balance(currency_id: Self::CurrencyId) -> Self::Balance;
 
+
+	/// base_unit of `currency_id`.
+	fn base_unit(currency_id: Self::CurrencyId) -> Self::Balance;
+
 	/// The total amount of issuance of `currency_id`.
 	fn total_issuance(currency_id: Self::CurrencyId) -> Self::Balance;
 
