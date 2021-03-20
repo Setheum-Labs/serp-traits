@@ -19,27 +19,6 @@ pub trait SerpMarket<AccountId> {
     /// The currency type in trade.
 	type CurrencyId: FullCodec + Eq + PartialEq + Copy + MaybeSerializeDeserialize + Debug;
 	
-	/// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpdown, 
-	/// the Serp Quote is `quotation + new_base_price`, `base_unit - new_base_price = fractioned`, `fractioned * serp_quote_multiple = quotation`,
-	/// and `serp_quoted_price` is the price the SERP will pay for serping in full including the serp_quote, 
-	/// the fraction for `serp_quoted_price` is same as `(market_price + (burn_rate * 2))` - where `market-price = new_base_price / quote_price`, 
-	/// `(burn_rate * 2) = serp_quote_multiple` as in price balance, `burn_rate = supply/new_supply` that is the ratio of burning/contracting the supply.
-	/// Therefore buying the stable currency for more than market price.
-	///
-	/// The quoted amount to pay serpers for serping down supply.
-	fn pay_serpup_by_quoted(currency_id: Self::CurrencyId, expand_by: Self::Balance, quote_price: Self::Balance) -> DispatchResult;
-	
-	/// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpdown, 
-	/// the Serp Quote is `quotation + new_base_price`, `base_unit - new_base_price = fractioned`, `fractioned * serp_quote_multiple = quotation`,
-	/// and `serp_quoted_price` is the price the SERP will pay for serping in full including the serp_quote, 
-	/// the fraction for `serp_quoted_price` is same as `(market_price + (burn_rate * 2))` - where `market-price = new_base_price / quote_price`, 
-	/// `(burn_rate * 2) = serp_quote_multiple` as in price balance, `burn_rate = supply/new_supply` that is the ratio of burning/contracting the supply.
-	/// Therefore buying the stable currency for more than market price.
-	///
-	/// The quoted amount to pay serpers for serping down supply.
-	fn pay_serpdown_by_quoted(currency_id: Self::CurrencyId, contract_by: Self::Balance, quote_price: Self::Balance) -> DispatchResult;
-
-
 	/// Called when `expand_supply` is received from the SERP.
 	/// Implementation should `deposit` the `amount` to `serpup_to`, 
 	/// then `amount` will be slashed from `serpup_from` and update
@@ -53,6 +32,30 @@ pub trait SerpMarket<AccountId> {
 	/// and update `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
 	/// the `native_currency` used to contract settcurrency supply.
 	fn contract_supply(native_currency_id: Self::CurrencyId, stable_currency_id: Self::CurrencyId, contract_by: Self::Balance, quote_price: Self::Balance) -> DispatchResult;
+
+
+
+	//// /// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpdown, 
+	//// /// the Serp Quote is `quotation + new_base_price`, `base_unit - new_base_price = fractioned`, `fractioned * serp_quote_multiple = quotation`,
+	//// /// and `serp_quoted_price` is the price the SERP will pay for serping in full including the serp_quote, 
+	//// /// the fraction for `serp_quoted_price` is same as `(market_price + (burn_rate * 2))` - where `market-price = new_base_price / quote_price`, 
+	//// /// `(burn_rate * 2) = serp_quote_multiple` as in price balance, `burn_rate = supply/new_supply` that is the ratio of burning/contracting the supply.
+	//// /// Therefore buying the stable currency for more than market price.
+	//// ///
+	//// /// The quoted amount to pay serpers for serping down supply.
+	//// fn pay_serpup_by_quoted(currency_id: Self::CurrencyId, expand_by: Self::Balance, quote_price: Self::Balance) -> DispatchResult;
+	
+	//// /// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpdown, 
+	//// /// the Serp Quote is `quotation + new_base_price`, `base_unit - new_base_price = fractioned`, `fractioned * serp_quote_multiple = quotation`,
+	//// /// and `serp_quoted_price` is the price the SERP will pay for serping in full including the serp_quote, 
+	//// /// the fraction for `serp_quoted_price` is same as `(market_price + (burn_rate * 2))` - where `market-price = new_base_price / quote_price`, 
+	//// /// `(burn_rate * 2) = serp_quote_multiple` as in price balance, `burn_rate = supply/new_supply` that is the ratio of burning/contracting the supply.
+	//// /// Therefore buying the stable currency for more than market price.
+	//// ///
+	//// /// The quoted amount to pay serpers for serping down supply.
+	//// fn pay_serpdown_by_quoted(currency_id: Self::CurrencyId, contract_by: Self::Balance, quote_price: Self::Balance) -> DispatchResult;
+
+
 
 	//// A trait to provide relative `base_price` of `base_settcurrency_id`. 
 	//// The settcurrency `Price` is `base_price * base_unit`.
