@@ -44,14 +44,14 @@ pub trait SerpMarket<AccountId> {
 	/// then `amount` will be slashed from `serpup_from` and update
 	/// `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
 	/// the `native_currency` used to expand settcurrency supply.
-	fn expand_supply(currency_id: Self::CurrencyId, expand_by: Self::Balance, quote_price: Self::Balance) -> DispatchResult;
+	fn expand_supply(currency_id: Self::CurrencyId, expand_by: Self::Balance, quote_price: Self::Balance, who: &AccountId) -> DispatchResult;
 
 	/// Called when `contract_supply` is received from the SERP.
 	/// Implementation should `deposit` the `base_currency_id` (The Native Currency) 
 	/// of `amount` to `serpup_to`, then `amount` will be slashed from `serpup_from` 
 	/// and update `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
 	/// the `native_currency` used to contract settcurrency supply.
-	fn contract_supply(currency_id: Self::CurrencyId, contract_by: Self::Balance, quote_price: Self::Balance) -> DispatchResult;
+	fn contract_supply(currency_id: Self::CurrencyId, contract_by: Self::Balance, quote_price: Self::Balance, who: &AccountId) -> DispatchResult;
 
 	//// A trait to provide relative `base_price` of `base_settcurrency_id`. 
 	//// The settcurrency `Price` is `base_price * base_unit`.
