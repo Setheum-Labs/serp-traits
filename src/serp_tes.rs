@@ -20,46 +20,21 @@ pub struct ElastAdjustmentFrequency<BlockNumber> {
 }
 
 /// Abstraction over a fungible multi-stable-currency Token Elasticity of Supply system.
-pub trait SerpTes<AccountId, BlockNumber, CurrencyId, Price> {
+pub trait SerpTes<BlockNumber> {
 	/// The currency identifier.
 	type CurrencyId: Parameter + Member + Copy + MaybeSerializeDeserialize;
 
 	/// The balance of an account.
 	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
 
-	fn adjustment_frequency(
-		adjustment_frequency: BlockNumber,
-    ) -> DispatchResult;
-
-	// Public immutables
-
-	/// The total amount of issuance of `currency_id`.
-	fn total_issuance(currency_id: Self::CurrencyId) -> Self::Balance;
-
-	// Public mutables
-
-	/// Contract the currency supply.
-	fn contract_supply(
-		currency_id: Self::CurrencyId,
-		total_issuance: Self::Balance,
-		amount: Self::Balance,
-		to: &AccountId,
-	) -> DispatchResult;
-
-	/// Expand the currency supply.
-	fn expand_supply(
-		currency_id: Self::CurrencyId,
-		total_issuance: Self::Balance,
-		amount: Self::Balance,
-		to: &AccountId,
-	) -> DispatchResult;
+	fn adjustment_frequency(adjustment_frequency: BlockNumber) -> DispatchResult;
 
 	/// Contracts or expands the currency supply based on conditions.
-	fn on_block_with_price(block: BlockNumber, currency_id: Self::CurrencyId, price: Price) -> DispatchResult;
+	fn on_block_with_price(currency_id: Self::CurrencyId, block: BlockNumber, price: Self::Balance) -> DispatchResult;
 
 	/// Expands (if the price is high) or contracts (if the price is low) the currency supply.
-	fn serp_elast(currency_id: Self::CurrencyId, price: Price) -> DispatchResult;
+	fn serp_elast(currency_id: Self::CurrencyId, price: Self::Balance) -> DispatchResult;
 
 	/// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
-	fn supply_change(currency_id: Self::CurrencyId, numerator: u64, denominator: u64, supply: u64) -> u64;
+	fn supply_change(currency_id: Self::CurrencyId, price: Self::Balance) -> Self::Balance;
 }
