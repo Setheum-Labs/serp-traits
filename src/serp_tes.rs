@@ -38,3 +38,12 @@ pub trait SerpTes<BlockNumber> {
 	/// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
 	fn supply_change(currency_id: Self::CurrencyId, price: Self::Balance) -> Self::Balance;
 }
+
+/// Expected price oracle interface. `fetch_price` must return the amount of Coins exchanged for the tracked value.
+pub trait FetchPrice<Balance> {
+	/// The balance of an account.
+	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
+
+	/// Fetch the current price.
+	fn fetch_price() -> Self::Balance;
+}
