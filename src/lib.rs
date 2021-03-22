@@ -10,6 +10,7 @@ use sp_std::{
 #[cfg(feature = "std")]
 use serde::{Deserialize, Serialize};
 
+pub use account::MergeAccount;
 pub use auction::{Auction, AuctionHandler, AuctionInfo, OnNewBidResult};
 pub use currency::{
 	BalanceStatus, Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, 
@@ -24,6 +25,7 @@ pub use rewards::RewardHandler;
 pub use serp_market::SerpMarket; //was {SerpMarket, SerpingStatus};
 pub use serp_tes::{FetchPrice, SerpTes}; //was {ElastAdjustmentFrequency, FetchPrice, SerpTes};
 
+pub mod account;
 pub mod arithmetic;
 pub mod auction;
 pub mod currency;
