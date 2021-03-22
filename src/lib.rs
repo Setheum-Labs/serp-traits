@@ -22,7 +22,7 @@ pub use nft::NFT;
 pub use price::{DefaultPriceProvider, PriceProvider};
 pub use rewards::RewardHandler;
 pub use serp_market::SerpMarket; //{SerpMarket, SerpingStatus};
-pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
+pub use serp_tes::{ElastAdjustmentFrequency, FetchPrice, SerpTes};
 
 pub mod account;
 pub mod arithmetic;
