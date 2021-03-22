@@ -24,7 +24,6 @@ pub use rewards::RewardHandler;
 pub use serp_market::SerpMarket; //{SerpMarket, SerpingStatus};
 pub use serp_tes::{ElastAdjustmentFrequency, FetchPrice, SerpTes};
 
-pub mod account;
 pub mod arithmetic;
 pub mod auction;
 pub mod currency;
