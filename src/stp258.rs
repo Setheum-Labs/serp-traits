@@ -345,3 +345,34 @@ pub trait OnDust<AccountId, CurrencyId, Balance> {
 impl<AccountId, CurrencyId, Balance> OnDust<AccountId, CurrencyId, Balance> for () {
 	fn on_dust(_: &AccountId, _: CurrencyId, _: Balance) {}
 }
+
+/// Abstraction over a `serp_market` system for the Setheum Elastic Reserve Protocol (SERP) Market for `Stp258Currency` .
+pub trait SerpMarket<AccountId>: Stp258Currency<AccountId> {
+	/// Called when `expand_supply` is received from the SERP.
+	/// Implementation should `deposit` the `amount` to `serpup_to`, 
+	/// then `amount` will be slashed from `serpup_from` and update
+	/// `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
+	/// the `native_currency` used to expand settcurrency supply.
+	fn expand_supply(
+		native_currency_id: Self::CurrencyId, 
+		stable_currency_id: Self::CurrencyId, 
+		expand_by: Self::Balance, 
+		//quote_price: Self::Balance, 
+		pay_by_quoted: Self::Balance, 
+		serpers: &AccountId
+	) -> DispatchResult;
+
+	/// Called when `contract_supply` is received from the SERP.
+	/// Implementation should `deposit` the `base_currency_id` (The Native Currency) 
+	/// of `amount` to `serpup_to`, then `amount` will be slashed from `serpup_from` 
+	/// and update `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
+	/// the `native_currency` used to contract settcurrency supply.
+	fn contract_supply(
+		native_currency_id: Self::CurrencyId, 
+		stable_currency_id: Self::CurrencyId, 
+		contract_by: Self::Balance, 
+		//quote_price: Self::Balance, 
+		pay_by_quoted: Self::Balance, 
+		serpers: &AccountId
+	) -> DispatchResult;
+}
