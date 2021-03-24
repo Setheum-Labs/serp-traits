@@ -1,8 +1,8 @@
 use crate::arithmetic;
 use codec::{Codec, FullCodec};
-pub use frame_support::traits::{BalanceStatus, LockIdentifier};
+pub use frame_support::{traits::{BalanceStatus, LockIdentifier}, Parameter};
 use sp_runtime::{
-	traits::{AtLeast32BitUnsigned, MaybeSerializeDeserialize},
+	traits::{AtLeast32BitUnsigned, Bounded, MaybeSerializeDeserialize, Member},
 	DispatchError, DispatchResult,
 };
 use sp_std::{
@@ -348,6 +348,34 @@ impl<AccountId, CurrencyId, Balance> OnDust<AccountId, CurrencyId, Balance> for 
 
 /// Abstraction over a `serp_market` system for the Setheum Elastic Reserve Protocol (SERP) Market for `Stp258Currency` .
 pub trait SerpMarket<AccountId>: Stp258Currency<AccountId> {
+	/// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpup, 
+	/// the Serp Quote is `new_base_price - quotation` as the amount of native_currency to slash/buy-and-burn from serpers, `base_unit - new_base_price = fractioned`, `fractioned * serp_quote_multiple = quotation`,
+	/// and `serp_quoted_price` is the price the SERP will pay for serping in full including the serp_quote, 
+	/// the fraction for `serp_quoted_price` is same as `(market_price - (mint_rate * 2))` - where `market-price = new_base_price / quote_price`, 
+	/// `(mint_rate * 2) = serp_quote_multiple` as in price balance, `mint_rate = supply/new_supply` that is the ratio of burning/contracting the supply.
+	/// Therefore buying the native currency for more than market price.
+	///
+	/// The quoted amount to pay serpers for serping up supply.
+	fn pay_serpup_by_quoted(
+		currency_id: Self::CurrencyId, 
+		expand_by: Self::Balance, 
+		quote_price: Self::Balance, 
+	) -> Self::Balance;
+
+	/// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpdown, 
+	/// the Serp Quote is `quotation + new_base_price`, `base_unit - new_base_price = fractioned`, `fractioned * serp_quote_multiple = quotation`,
+	/// and `serp_quoted_price` is the price the SERP will pay for serping in full including the serp_quote, 
+	/// the fraction for `serp_quoted_price` is same as `(market_price + (burn_rate * 2))` - where `market-price = new_base_price / quote_price`, 
+	/// `(burn_rate * 2) = serp_quote_multiple` as in price balance, `burn_rate = supply/new_supply` that is the ratio of burning/contracting the supply.
+	/// Therefore buying the stable currency for more than market price.
+	///
+	/// The quoted amount to pay serpers for serping down supply.
+	fn pay_serpdown_by_quoted(
+		currency_id: Self::CurrencyId, 
+		contract_by: Self::Balance, 
+		quote_price: Self::Balance, 
+	) -> Self::Balance;
+
 	/// Called when `expand_supply` is received from the SERP.
 	/// Implementation should `deposit` the `amount` to `serpup_to`, 
 	/// then `amount` will be slashed from `serpup_from` and update
@@ -375,4 +403,42 @@ pub trait SerpMarket<AccountId>: Stp258Currency<AccountId> {
 		pay_by_quoted: Self::Balance, 
 		serpers: &AccountId
 	) -> DispatchResult;
+}
+
+/// Abstraction over a fungible multi-stable-currency Token Elasticity of Supply system.
+pub trait SerpTes<BlockNumber> {
+	/// The currency identifier.
+	type CurrencyId: Parameter + Member + Copy + MaybeSerializeDeserialize;
+
+	/// The balance of an account.
+	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
+
+	fn on_serp_initialize(now: BlockNumber, sett_price: Self::Balance, sett_currency_id: Self::CurrencyId, jusd_price: Self::Balance, jusd_currency_id: Self::CurrencyId) -> DispatchResult;
+
+	/// The time used to denote the frequency of price elasticity adjustment; 
+	/// just a `BlockNumber`.
+	fn adjustment_frequency(adjustment_frequency: BlockNumber) -> DispatchResult;
+		
+	/// Contracts or expands the currency supply based on conditions.
+	fn on_block_with_price(currency_id: Self::CurrencyId, block: BlockNumber, price: Self::Balance) -> DispatchResult;
+
+	/// Expands (if the price is high) or contracts (if the price is low) the currency supply.
+	fn serp_elast(currency_id: Self::CurrencyId, price: Self::Balance) -> DispatchResult;
+
+	/// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
+	fn supply_change(currency_id: Self::CurrencyId, price: Self::Balance) -> Self::Balance;	
+}
+
+
+/// Something that can estimate at which block the next `new_serping` will be triggered. This must
+/// always be implemented by the serp-tes module.
+pub trait EstimateNextSerping<BlockNumber> {
+	/// Return the block number at which the next new serping is estimated to happen.
+	fn estimate_next_serping(now: BlockNumber) -> Option<BlockNumber>;
+}
+
+impl<BlockNumber: Bounded> EstimateNextSerping<BlockNumber> for () {
+	fn estimate_next_serping(_: BlockNumber) -> Option<BlockNumber> {
+		Default::default()
+	}
 }

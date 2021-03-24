@@ -45,10 +45,3 @@ pub trait FetchPrice<Balance> {
 	/// Fetch the current price.
 	fn fetch_price() -> Self::Balance;
 }
-
-
-//// /// The frequency of adjustments for the Currency supply.
-//// pub struct ElastAdjustmentFrequency<BlockNumber> {
-//// 	/// Number of blocks for adjustment frequency.
-//// 	pub adjustment_frequency: BlockNumber,
-//// }
