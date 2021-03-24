@@ -375,6 +375,38 @@ pub trait SerpMarket<AccountId>: Stp258Currency<AccountId> {
 		pay_by_quoted: Self::Balance, 
 		serpers: &AccountId
 	) -> DispatchResult;
+
+	/// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpup, 
+	/// the Serp Quote is `new_base_price - quotation` as the amount of native_currency to slash/buy-and-burn from serpers, `base_unit - new_base_price = fractioned`, `fractioned * serp_quote_multiple = quotation`,
+	/// and `serp_quoted_price` is the price the SERP will pay for serping in full including the serp_quote, 
+	/// the fraction for `serp_quoted_price` is same as `(market_price - (mint_rate * 2))` - where `market-price = new_base_price / quote_price`, 
+	/// `(mint_rate * 2) = serp_quote_multiple` as in price balance, `mint_rate = supply/new_supply` that is the ratio of burning/contracting the supply.
+	/// Therefore buying the native currency for more than market price.
+	///
+	/// `quote_price` is the price of expand settcurrency supply.
+	/// The quoted amount to pay serpers for serping up supply.
+	fn pay_serpup_by_quoted(
+		currency_id: Self::CurrencyId, 
+		expand_by: Self::Balance, 
+		quote_price: Self::Balance, 
+	) -> Self::Balance;
+
+	/// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpdown, 
+	/// the Serp Quote is `quotation + new_base_price`, `base_unit - new_base_price = fractioned`, `fractioned * serp_quote_multiple = quotation`,
+	/// and `serp_quoted_price` is the price the SERP will pay for serping in full including the serp_quote, 
+	/// the fraction for `serp_quoted_price` is same as `(market_price + (burn_rate * 2))` - where `market-price = new_base_price / quote_price`, 
+	/// `(burn_rate * 2) = serp_quote_multiple` as in price balance, `burn_rate = supply/new_supply` that is the ratio of burning/contracting the supply.
+	/// Therefore buying the stable currency for more than market price.
+	///
+	/// `quote_price` is the price of `native_currency`.. `quote_price` is the price ( relative to the settcurrency) of 
+	/// the `native_currency` used to contract settcurrency supply.
+	///
+	/// The quoted amount to pay serpers for serping down supply.
+	fn pay_serpdown_by_quoted(
+		currency_id: Self::CurrencyId, 
+		contract_by: Self::Balance, 
+		quote_price: Self::Balance, 
+	) -> Self::Balance;
 }
 
 /// Abstraction over a fungible multi-stable-currency Token Elasticity of Supply system.
