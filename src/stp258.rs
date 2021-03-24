@@ -2,8 +2,8 @@ use crate::arithmetic;
 use codec::{Codec, FullCodec};
 pub use frame_support::{traits::{BalanceStatus, LockIdentifier}, Parameter};
 use sp_runtime::{
-	traits::{AtLeast32BitUnsigned, Bounded, MaybeSerializeDeserialize, Member},
-	DispatchError, DispatchResult,
+	traits::{AtLeast32BitUnsigned, MaybeSerializeDeserialize, Member},
+	DispatchError, DispatchResult, 
 };
 use sp_std::{
 	cmp::{Eq, PartialEq},
@@ -348,46 +348,18 @@ impl<AccountId, CurrencyId, Balance> OnDust<AccountId, CurrencyId, Balance> for 
 
 /// Abstraction over a `serp_market` system for the Setheum Elastic Reserve Protocol (SERP) Market for `Stp258Currency` .
 pub trait SerpMarket<AccountId>: Stp258Currency<AccountId> {
-	/// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpup, 
-	/// the Serp Quote is `new_base_price - quotation` as the amount of native_currency to slash/buy-and-burn from serpers, `base_unit - new_base_price = fractioned`, `fractioned * serp_quote_multiple = quotation`,
-	/// and `serp_quoted_price` is the price the SERP will pay for serping in full including the serp_quote, 
-	/// the fraction for `serp_quoted_price` is same as `(market_price - (mint_rate * 2))` - where `market-price = new_base_price / quote_price`, 
-	/// `(mint_rate * 2) = serp_quote_multiple` as in price balance, `mint_rate = supply/new_supply` that is the ratio of burning/contracting the supply.
-	/// Therefore buying the native currency for more than market price.
-	///
-	/// The quoted amount to pay serpers for serping up supply.
-	fn pay_serpup_by_quoted(
-		currency_id: Self::CurrencyId, 
-		expand_by: Self::Balance, 
-		quote_price: Self::Balance, 
-	) -> Self::Balance;
-
-	/// Quote the amount of currency price quoted as serping fee (serp quoting) for Serpers during serpdown, 
-	/// the Serp Quote is `quotation + new_base_price`, `base_unit - new_base_price = fractioned`, `fractioned * serp_quote_multiple = quotation`,
-	/// and `serp_quoted_price` is the price the SERP will pay for serping in full including the serp_quote, 
-	/// the fraction for `serp_quoted_price` is same as `(market_price + (burn_rate * 2))` - where `market-price = new_base_price / quote_price`, 
-	/// `(burn_rate * 2) = serp_quote_multiple` as in price balance, `burn_rate = supply/new_supply` that is the ratio of burning/contracting the supply.
-	/// Therefore buying the stable currency for more than market price.
-	///
-	/// The quoted amount to pay serpers for serping down supply.
-	fn pay_serpdown_by_quoted(
-		currency_id: Self::CurrencyId, 
-		contract_by: Self::Balance, 
-		quote_price: Self::Balance, 
-	) -> Self::Balance;
-
 	/// Called when `expand_supply` is received from the SERP.
 	/// Implementation should `deposit` the `amount` to `serpup_to`, 
 	/// then `amount` will be slashed from `serpup_from` and update
 	/// `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
 	/// the `native_currency` used to expand settcurrency supply.
 	fn expand_supply(
-		// native_currency_id: Self::CurrencyId, 
+		native_currency_id: Self::CurrencyId, 
 		stable_currency_id: Self::CurrencyId, 
 		expand_by: Self::Balance, 
-		quote_price: Self::Balance, 
-		// pay_by_quoted: Self::Balance, 
-		// serpers: &AccountId
+		//quote_price: Self::Balance, 
+		pay_by_quoted: Self::Balance, 
+		serpers: &AccountId
 	) -> DispatchResult;
 
 	/// Called when `contract_supply` is received from the SERP.
@@ -396,12 +368,12 @@ pub trait SerpMarket<AccountId>: Stp258Currency<AccountId> {
 	/// and update `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
 	/// the `native_currency` used to contract settcurrency supply.
 	fn contract_supply(
-		// native_currency_id: Self::CurrencyId, 
+		native_currency_id: Self::CurrencyId, 
 		stable_currency_id: Self::CurrencyId, 
 		contract_by: Self::Balance, 
-		quote_price: Self::Balance, 
-		// pay_by_quoted: Self::Balance, 
-		// serpers: &AccountId
+		//quote_price: Self::Balance, 
+		pay_by_quoted: Self::Balance, 
+		serpers: &AccountId
 	) -> DispatchResult;
 }
 
@@ -429,16 +401,16 @@ pub trait SerpTes<BlockNumber> {
 	fn supply_change(currency_id: Self::CurrencyId, price: Self::Balance) -> Self::Balance;	
 }
 
+/// Expected price oracle interface. `fetch_price` must return the amount of Coins exchanged for the tracked value.
+pub trait FetchPrice<Balance> {
+	/// The balance of an account.
+	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
 
-/// Something that can estimate at which block the next `new_serping` will be triggered. This must
-/// always be implemented by the serp-tes module.
-pub trait EstimateNextSerping<BlockNumber> {
-	/// Return the block number at which the next new serping is estimated to happen.
-	fn estimate_next_serping(now: BlockNumber) -> Option<BlockNumber>;
+	/// Fetch the current price.
+	fn fetch_price() -> Self::Balance;
 }
 
-impl<BlockNumber: Bounded> EstimateNextSerping<BlockNumber> for () {
-	fn estimate_next_serping(_: BlockNumber) -> Option<BlockNumber> {
-		Default::default()
-	}
+/// A trait to provide relative price for two currencies
+pub trait SerpTesPriceProvider<CurrencyId, Price> {
+	fn get_price(base: CurrencyId, quote: CurrencyId) -> Option<Price>;
 }
