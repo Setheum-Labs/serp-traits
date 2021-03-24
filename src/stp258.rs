@@ -382,12 +382,12 @@ pub trait SerpMarket<AccountId>: Stp258Currency<AccountId> {
 	/// `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
 	/// the `native_currency` used to expand settcurrency supply.
 	fn expand_supply(
-		native_currency_id: Self::CurrencyId, 
+		// native_currency_id: Self::CurrencyId, 
 		stable_currency_id: Self::CurrencyId, 
 		expand_by: Self::Balance, 
-		//quote_price: Self::Balance, 
-		pay_by_quoted: Self::Balance, 
-		serpers: &AccountId
+		quote_price: Self::Balance, 
+		// pay_by_quoted: Self::Balance, 
+		// serpers: &AccountId
 	) -> DispatchResult;
 
 	/// Called when `contract_supply` is received from the SERP.
@@ -396,12 +396,12 @@ pub trait SerpMarket<AccountId>: Stp258Currency<AccountId> {
 	/// and update `new_supply`. `quote_price` is the price ( relative to the settcurrency) of 
 	/// the `native_currency` used to contract settcurrency supply.
 	fn contract_supply(
-		native_currency_id: Self::CurrencyId, 
+		// native_currency_id: Self::CurrencyId, 
 		stable_currency_id: Self::CurrencyId, 
 		contract_by: Self::Balance, 
-		//quote_price: Self::Balance, 
-		pay_by_quoted: Self::Balance, 
-		serpers: &AccountId
+		quote_price: Self::Balance, 
+		// pay_by_quoted: Self::Balance, 
+		// serpers: &AccountId
 	) -> DispatchResult;
 }
 
