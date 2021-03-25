@@ -443,6 +443,11 @@ pub trait SerpTes<AccountId>: Stp258Currency<AccountId> {
 		native_currency_price: Self::Balance,
 	) -> DispatchResult;
 
+	
+	/// This just returns the Serpers/Serping pool's account id.
+	///
+	fn on_serpers() -> AccountId;
+
 	/// On Expand Supply, this is going to call `expand_supply`.
 	/// This is often called by the `serp_elast` from the `SerpTes` trait.
 	///
