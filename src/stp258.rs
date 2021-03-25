@@ -418,20 +418,9 @@ pub trait SerpTes<AccountId>: Stp258Currency<AccountId> {
 	/// Filters through the conditions to see whether it's time to adjust supply or not.
 	fn on_serp_block(
 		block: Self::Moment, 
-		sett_price: Self::Balance, 
-		sett_id: Self::CurrencyId,
-		jusd_price: Self::Balance, 
-		jusd_id: Self::CurrencyId,
-		dinar_price: Self::Balance, 
-	) -> DispatchResult;
-
-	// This filters through the urrency IDs and alligns them to serp_elast for serping filter.
-	fn on_serp_elast(
-		sett_price: Self::Balance, 
-		sett_id: Self::CurrencyId,
-		jusd_price: Self::Balance, 
-		jusd_id: Self::CurrencyId,
-		dinar_price: Self::Balance, 
+		stable_currency_id: Self::CurrencyId,
+		stable_currency_price: Self::Balance,
+		native_currency_price: Self::Balance, 
 	) -> DispatchResult;
 
 	/// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
