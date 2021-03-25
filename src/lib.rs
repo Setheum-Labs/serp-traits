@@ -12,16 +12,19 @@ use serde::{Deserialize, Serialize};
 
 pub use auction::{Auction, AuctionHandler, AuctionInfo, OnNewBidResult};
 pub use stp258::{
-	BalanceStatus, Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, 
-	Stp258AssetReservable, LockIdentifier, Stp258Currency, Stp258CurrencyExtended, 
-	Stp258CurrencyLockable, Stp258CurrencyReservable, OnDust,
+	BalanceStatus, 
+	FetchPrice,  LockIdentifier,  OnDust, 
+	SerpMarket, SerpTes, SerpTesPriceProvider, 
+	Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, 
+	Stp258AssetReservable, Stp258Currency, Stp258CurrencyExtended, 
+	Stp258CurrencyLockable, Stp258CurrencyReservable,
 };
 pub use data_provider::{DataFeeder, DataProvider, DataProviderExtended};
 pub use get_by_key::GetByKey;
 pub use nft::NFT;
 pub use price::{DefaultPriceProvider, PriceProvider};
 pub use rewards::RewardHandler;
-pub use serp_market::SerpMarket; //{SerpMarket, SerpingStatus};
+// pub use serp_market::SerpMarket; //{SerpMarket, SerpingStatus};
 // pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
 
 pub mod account;
@@ -33,7 +36,7 @@ pub mod get_by_key;
 pub mod nft;
 pub mod price;
 pub mod rewards;
-pub mod serp_market;
+// pub mod serp_market;
 // pub mod serp_tes;
 
 
