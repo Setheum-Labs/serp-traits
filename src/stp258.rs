@@ -410,14 +410,11 @@ pub trait SerpMarket<AccountId>: Stp258Currency<AccountId> {
 }
 
 /// Abstraction over a fungible multi-stable-currency Token Elasticity of Supply system.
-pub trait SerpTes<AccountId>: Stp258Currency<AccountId> {
-	/// The quantity used to denote time; usually just a `BlockNumber`.
-	type Moment;
-
+pub trait SerpTes<AccountId, BlockNumber>: Stp258Currency<AccountId> {
 	/// Contracts or expands the currency supply based on conditions.
 	/// Filters through the conditions to see whether it's time to adjust supply or not.
 	fn on_serp_block(
-		block: Self::Moment, 
+		block: &BlockNumber, 
 		stable_currency_id: Self::CurrencyId,
 		stable_currency_price: Self::Balance,
 		native_currency_price: Self::Balance, 
