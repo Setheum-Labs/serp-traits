@@ -11,7 +11,7 @@ use sp_std::{
 use serde::{Deserialize, Serialize};
 
 pub use auction::{Auction, AuctionHandler, AuctionInfo, OnNewBidResult};
-pub use currency::{
+pub use stp258::{
 	BalanceStatus, Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, 
 	Stp258AssetReservable, LockIdentifier, Stp258Currency, Stp258CurrencyExtended, 
 	Stp258CurrencyLockable, Stp258CurrencyReservable, OnDust,
@@ -22,19 +22,19 @@ pub use nft::NFT;
 pub use price::{DefaultPriceProvider, PriceProvider};
 pub use rewards::RewardHandler;
 pub use serp_market::SerpMarket; //{SerpMarket, SerpingStatus};
-pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
+// pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
 
 pub mod account;
 pub mod arithmetic;
 pub mod auction;
-pub mod currency;
+pub mod stp258;
 pub mod data_provider;
 pub mod get_by_key;
 pub mod nft;
 pub mod price;
 pub mod rewards;
 pub mod serp_market;
-pub mod serp_tes;
+// pub mod serp_tes;
 
 
 /// New data handler
