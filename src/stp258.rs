@@ -348,15 +348,6 @@ impl<AccountId, CurrencyId, Balance> OnDust<AccountId, CurrencyId, Balance> for 
 
 /// Abstraction over a `serp_market` system for the Setheum Elastic Reserve Protocol (SERP) Market for `Stp258Currency` .
 pub trait SerpMarket<AccountId>: Stp258Currency<AccountId> {
-	/// On Expand Supply, this is going to call `expand_supply`.
-	/// This is often called by the `serp_elast` from the `SerpTes` trait.
-	///
-	fn on_expand_supply(
-		currency_id: Self::CurrencyId, 
-		expand_by: Self::Balance, 
-		quote_price: Self::Balance, 
-	) -> Self::Balance;
-
 	/// Called when `expand_supply` is received from the SERP.
 	/// Implementation should `deposit` the `amount` to `serpup_to`, 
 	/// then `amount` will be slashed from `serpup_from` and update
@@ -370,15 +361,6 @@ pub trait SerpMarket<AccountId>: Stp258Currency<AccountId> {
 		pay_by_quoted: Self::Balance, 
 		serpers: &AccountId
 	) -> DispatchResult;
-
-	/// On Contract Supply, this is going to call `contract_supply`.
-	/// This is often called by the `serp_elast` from the `SerpTes` trait.
-	///
-	fn on_contract_supply(
-		currency_id: Self::CurrencyId, 
-		contract_by: Self::Balance, 
-		quote_price: Self::Balance, 
-	) -> Self::Balance;
 
 	/// Called when `contract_supply` is received from the SERP.
 	/// Implementation should `deposit` the `base_currency_id` (The Native Currency) 
@@ -449,6 +431,24 @@ pub trait SerpTes<BlockNumber> {
 
 	/// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
 	fn supply_change(currency_id: Self::CurrencyId, price: Self::Balance) -> Self::Balance;	
+
+	/// On Expand Supply, this is going to call `expand_supply`.
+	/// This is often called by the `serp_elast` from the `SerpTes` trait.
+	///
+	fn on_expand_supply(
+		currency_id: Self::CurrencyId, 
+		expand_by: Self::Balance, 
+		quote_price: Self::Balance, 
+	) -> Self::Balance;
+
+	/// On Contract Supply, this is going to call `contract_supply`.
+	/// This is often called by the `serp_elast` from the `SerpTes` trait.
+	///
+	fn on_contract_supply(
+		currency_id: Self::CurrencyId, 
+		contract_by: Self::Balance, 
+		quote_price: Self::Balance, 
+	) -> Self::Balance;
 }
 
 /// Expected price oracle interface. `fetch_price` must return the amount of Coins exchanged for the tracked value.
