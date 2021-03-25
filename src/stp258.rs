@@ -441,7 +441,7 @@ pub trait SerpTes<AccountId, BlockNumber>: Stp258Currency<AccountId> {
 		currency_id: Self::CurrencyId, 
 		expand_by: Self::Balance, 
 		quote_price: Self::Balance, 
-	) -> Self::Balance;
+	) -> DispatchResult;
 
 	/// On Contract Supply, this is going to call `contract_supply`.
 	/// This is often called by the `serp_elast` from the `SerpTes` trait.
@@ -450,7 +450,7 @@ pub trait SerpTes<AccountId, BlockNumber>: Stp258Currency<AccountId> {
 		currency_id: Self::CurrencyId, 
 		contract_by: Self::Balance, 
 		quote_price: Self::Balance, 
-	) -> Self::Balance;
+	) -> DispatchResult;
 }
 
 /// Expected price oracle interface. `fetch_price` must return the amount of Coins exchanged for the tracked value.
