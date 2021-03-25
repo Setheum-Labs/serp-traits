@@ -2,7 +2,7 @@ use crate::arithmetic;
 use codec::{Codec, FullCodec};
 pub use frame_support::{traits::{BalanceStatus, LockIdentifier}, Parameter};
 use sp_runtime::{
-	traits::{AtLeast32BitUnsigned, MaybeSerializeDeserialize, Member},
+	traits::{AtLeast32BitUnsigned, MaybeSerializeDeserialize},
 	DispatchError, DispatchResult, 
 };
 use sp_std::{
