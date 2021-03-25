@@ -410,27 +410,38 @@ pub trait SerpMarket<AccountId>: Stp258Currency<AccountId> {
 }
 
 /// Abstraction over a fungible multi-stable-currency Token Elasticity of Supply system.
-pub trait SerpTes<BlockNumber> {
-	/// The currency identifier.
-	type CurrencyId: Parameter + Member + Copy + MaybeSerializeDeserialize;
+pub trait SerpTes<AccountId>: Stp258Currency<AccountId> {
+	/// The quantity used to denote time; usually just a `BlockNumber`.
+	type Moment;
 
-	/// The balance of an account.
-	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
-
-	fn on_serp_initialize(now: BlockNumber, sett_price: Self::Balance, sett_currency_id: Self::CurrencyId, jusd_price: Self::Balance, jusd_currency_id: Self::CurrencyId) -> DispatchResult;
-
-	/// The time used to denote the frequency of price elasticity adjustment; 
-	/// just a `BlockNumber`.
-	fn adjustment_frequency(adjustment_frequency: BlockNumber) -> DispatchResult;
-		
 	/// Contracts or expands the currency supply based on conditions.
-	fn on_block_with_price(currency_id: Self::CurrencyId, block: BlockNumber, price: Self::Balance) -> DispatchResult;
+	/// Filters through the conditions to see whether it's time to adjust supply or not.
+	fn on_serp_block(
+		block: Self::Moment, 
+		sett_price: Self::Balance, 
+		sett_id: Self::CurrencyId,
+		jusd_price: Self::Balance, 
+		jusd_id: Self::CurrencyId,
+		dinar_price: Self::Balance, 
+	) -> DispatchResult;
 
-	/// Expands (if the price is high) or contracts (if the price is low) the currency supply.
-	fn serp_elast(currency_id: Self::CurrencyId, price: Self::Balance) -> DispatchResult;
+	// This filters through the urrency IDs and alligns them to serp_elast for serping filter.
+	fn on_serp_elast(
+		sett_price: Self::Balance, 
+		sett_id: Self::CurrencyId,
+		jusd_price: Self::Balance, 
+		jusd_id: Self::CurrencyId,
+		dinar_price: Self::Balance, 
+	) -> DispatchResult;
 
 	/// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
-	fn supply_change(currency_id: Self::CurrencyId, price: Self::Balance) -> Self::Balance;	
+	fn supply_change(currency_id: Self::CurrencyId, new_price: Self::Balance) -> Self::Balance;	
+
+	fn serp_elast(
+		stable_currency_id: Self::CurrencyId, 
+		stable_currency_price: Self::Balance, 
+		native_currency_price: Self::Balance,
+	) -> DispatchResult;
 
 	/// On Expand Supply, this is going to call `expand_supply`.
 	/// This is often called by the `serp_elast` from the `SerpTes` trait.
