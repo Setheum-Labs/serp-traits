@@ -1,5 +1,6 @@
 use codec::FullCodec;
-pub use frame_support::{traits::{BalanceStatus, LockIdentifier}, Parameter};
+use frame_support::traits::{BalanceStatus, LockIdentifier};
+pub use frame_support::Parameter;
 use sp_runtime::{
 	traits::{
 		AtLeast32BitUnsigned, MaybeSerializeDeserialize, Member,
@@ -9,7 +10,7 @@ use sp_runtime::{
 use sp_std::fmt::Debug;
 
 /// A trait to provide relative price for two currencies
-pub trait SerpTesPriceProvider<CurrencyId, Price> {
+pub trait TesPriceProvider<CurrencyId, Price> {
 	fn get_price(base: CurrencyId, quote: CurrencyId) -> Option<Price>;
 }
 
@@ -27,39 +28,11 @@ pub trait SerpTes<AccountId, BlockNumber, CurrencyId, Price> {
 	/// The balance of an account.
 	type Balance: AtLeast32BitUnsigned + FullCodec + Copy + MaybeSerializeDeserialize + Debug + Default;
 
-	fn adjustment_frequency(
-		adjustment_frequency: BlockNumber,
-    ) -> DispatchResult;
-
 	// Public immutables
-
-	/// The total amount of issuance of `currency_id`.
-	fn total_issuance(currency_id: Self::CurrencyId) -> Self::Balance;
-
-	// Public mutables
-
-	/// Contract the currency supply.
-	fn contract_supply(
-		currency_id: Self::CurrencyId,
-		total_issuance: Self::Balance,
-		amount: Self::Balance,
-		to: &AccountId,
-	) -> DispatchResult;
-
-	/// Expand the currency supply.
-	fn expand_supply(
-		currency_id: Self::CurrencyId,
-		total_issuance: Self::Balance,
-		amount: Self::Balance,
-		to: &AccountId,
-	) -> DispatchResult;
-
-	/// Contracts or expands the currency supply based on conditions.
-	fn on_block_with_price(block: BlockNumber, currency_id: Self::CurrencyId, price: Price) -> DispatchResult;
 
 	/// Expands (if the price is high) or contracts (if the price is low) the currency supply.
 	fn serp_elast(currency_id: Self::CurrencyId, price: Price) -> DispatchResult;
 
 	/// Calculate the amount of supply change from a fraction given as `numerator` and `denominator`.
-	fn supply_change(currency_id: Self::CurrencyId, numerator: u64, denominator: u64, supply: u64) -> u64;
+	fn calculate_supply_change(currency_id: Self::CurrencyId, numerator: u64, denominator: u64, supply: u64) -> u64;
 }

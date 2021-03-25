@@ -26,7 +26,6 @@ pub use price::{DefaultPriceProvider, PriceProvider};
 pub use rewards::RewardHandler;
 // pub use serp_market::SerpMarket; //{SerpMarket, SerpingStatus};
 // pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
-
 pub mod account;
 pub mod arithmetic;
 pub mod auction;
@@ -38,7 +37,6 @@ pub mod price;
 pub mod rewards;
 // pub mod serp_market;
 // pub mod serp_tes;
-
 
 /// New data handler
 #[impl_trait_for_tuples::impl_for_tuples(30)]
