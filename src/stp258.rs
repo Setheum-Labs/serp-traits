@@ -428,7 +428,7 @@ pub trait SerpTes<AccountId>: Stp258Currency<AccountId> {
 	fn serp_elast(
 		stable_currency_id: Self::CurrencyId, 
 		stable_currency_price: Self::Balance, 
-		native_currency_id: Self::Balance,
+		native_currency_id: Self::CurrencyId,
 		native_currency_price: Self::Balance,
 	) -> DispatchResult;
 
