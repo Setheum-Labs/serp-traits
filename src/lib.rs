@@ -11,39 +11,32 @@ use sp_std::{
 use serde::{Deserialize, Serialize};
 
 pub use auction::{Auction, AuctionHandler, AuctionInfo, OnNewBidResult};
-
+pub use stp258::{
+	BalanceStatus, 
+	FetchPrice,  LockIdentifier,  OnDust, 
+	SerpMarket, SerpTes, SerpTesPriceProvider, 
+	Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, 
+	Stp258AssetReservable, Stp258Currency, Stp258CurrencyExtended, 
+	Stp258CurrencyLockable, Stp258CurrencyReservable,
+};
 pub use data_provider::{DataFeeder, DataProvider, DataProviderExtended};
 pub use get_by_key::GetByKey;
 pub use nft::NFT;
 pub use price::{DefaultPriceProvider, PriceProvider};
 pub use rewards::RewardHandler;
-pub use serp_market::SerpMarket;
-pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
-pub use setheum_currency::{Currency, LockableCurrency, ReservableCurrency};
-pub use stp258_currency::{
-	BalanceStatus, LockIdentifier,
-	OnDust, Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, 
-	Stp258AssetReservable, Stp258Currency, Stp258CurrencyExtended, 
-	Stp258CurrencyLockable, Stp258CurrencyReservable,
-};
-pub use stp258_stable_currency::{
-	Stp258StableCurrency, Stp258StableCurrencyExtended, 
-	Stp258StableCurrencyLockable, Stp258StableCurrencyReservable,
-};
-
+// pub use serp_market::SerpMarket; //{SerpMarket, SerpingStatus};
+// pub use serp_tes::{SerpTes, ElastAdjustmentFrequency};
 pub mod account;
 pub mod arithmetic;
 pub mod auction;
+pub mod stp258;
 pub mod data_provider;
 pub mod get_by_key;
 pub mod nft;
 pub mod price;
 pub mod rewards;
-pub mod serp_market;
-pub mod serp_tes;
-pub mod setheum_currency;
-pub mod stp258_currency;
-pub mod stp258_stable_currency;
+// pub mod serp_market;
+// pub mod serp_tes;
 
 /// New data handler
 #[impl_trait_for_tuples::impl_for_tuples(30)]
