@@ -436,7 +436,8 @@ pub trait SerpTes<AccountId>: Stp258Currency<AccountId> {
 	/// This is often called by the `serp_elast` from the `SerpTes` trait.
 	///
 	fn on_expand_supply(
-		currency_id: Self::CurrencyId, 
+		native_currency_id: Self::CurrencyId, 
+		stable_currency_id: Self::CurrencyId, 
 		expand_by: Self::Balance, 
 		quote_price: Self::Balance, 
 	) -> DispatchResult;
@@ -445,7 +446,8 @@ pub trait SerpTes<AccountId>: Stp258Currency<AccountId> {
 	/// This is often called by the `serp_elast` from the `SerpTes` trait.
 	///
 	fn on_contract_supply(
-		currency_id: Self::CurrencyId, 
+		native_currency_id: Self::CurrencyId, 
+		stable_currency_id: Self::CurrencyId, 
 		contract_by: Self::Balance, 
 		quote_price: Self::Balance, 
 	) -> DispatchResult;
