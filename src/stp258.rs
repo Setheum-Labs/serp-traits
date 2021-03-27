@@ -1,6 +1,10 @@
 use crate::arithmetic;
 use codec::{Codec, FullCodec};
-pub use frame_support::{traits::{BalanceStatus, LockIdentifier}, Parameter};
+pub use frame_support::{
+	traits::{BalanceStatus, LockIdentifier},
+	codec::{Encode, Decode, EncodeLike},
+	Parameter
+};
 use sp_runtime::{
 	traits::{AtLeast32BitUnsigned, MaybeSerializeDeserialize},
 	DispatchError, DispatchResult, 
@@ -379,12 +383,11 @@ pub trait SerpMarket<AccountId>: Stp258Currency<AccountId> {
 
 /// Abstraction over a fungible multi-stable-currency Token Elasticity of Supply system.
 pub trait SerpTes<AccountId>: Stp258Currency<AccountId> {
-	/// The quantity used to denote time; usually just a `BlockNumber`.
-	type Moment;
+	type BlockNumber: Decode + Encode + EncodeLike + Clone + Default;
 	/// Contracts or expands the currency supply based on conditions.
 	/// Filters through the conditions to see whether it's time to adjust supply or not.
 	fn on_serp_block(
-		now: Self::Moment, 
+		now: Self::BlockNumber, 
 		stable_currency_id: Self::CurrencyId,
 		stable_currency_price: Self::Balance,
 		native_currency_id: Self::CurrencyId,
