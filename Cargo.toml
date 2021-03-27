@@ -4,7 +4,7 @@ description = "Shared traits including `BasicCurrency`, `SettCurrency`, `Auction
 edition = '2018'
 homepage = 'https://setheum.xyz'
 license = 'Apache-2.0 License'
-name = "stp258-traits"
+name = "serp-traits"
 repository = "https://github.com/Setheum-Labs/serp-traits/"
 version = "0.5.3"
 
