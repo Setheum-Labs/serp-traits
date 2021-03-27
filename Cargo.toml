@@ -6,7 +6,7 @@ homepage = 'https://setheum.xyz'
 license = 'Apache-2.0 License'
 name = "stp258-traits"
 repository = "https://github.com/Setheum-Labs/serp-traits/"
-version = "0.5.2"
+version = "0.5.3"
 
 [dependencies]
 serde = { version = "1.0.111", optional = true }
